@@ -82,28 +82,13 @@
         opacity: 0.5;
     }
 
-    .pin-btn {
-        background: rgba(244,236,216,0.06);
-        border: 1px solid var(--gold);
-        color: var(--gold-bright);
-        border-radius: 5px;
-        padding: 7px 12px;
-        cursor: pointer;
-        font-family: var(--font-ui);
-        font-size: 12px;
-        white-space: nowrap;
-        transition: background 0.15s;
-    }
-    .pin-btn:hover { background: rgba(200,155,60,0.2); }
-
     /* ---------- LAYOUT ---------- */
     .layout {
         display: flex;
         height: calc(100vh - 61px);
-        position: relative;
     }
 
-    /* ---------- SIDEBAR (the "margin") ---------- */
+    /* ---------- SIDEBAR ---------- */
     #toolbar {
         width: 240px;
         flex-shrink: 0;
@@ -111,47 +96,6 @@
         border-right: 2px solid var(--gold);
         padding: 18px 16px;
         overflow-y: auto;
-    }
-
-    /* Auto-hide mode: sidebar becomes a thin edge strip that expands on hover,
-       overlaying the canvas instead of reserving permanent space for itself. */
-    @media (min-width: 781px) {
-        .layout.auto-hide #toolbar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 16px;
-            padding-left: 4px;
-            padding-right: 4px;
-            overflow: hidden;
-            z-index: 20;
-            transition: width 0.18s ease;
-        }
-        /* Belt-and-suspenders: fade the actual content out too, not just clip it,
-           so nothing is ever partially visible in the collapsed strip. */
-        .layout.auto-hide #toolbar > * {
-            opacity: 0;
-            transition: opacity 0.12s ease;
-            pointer-events: none;
-        }
-        .layout.auto-hide #toolbar:hover,
-        .layout.auto-hide #toolbar:focus-within {
-            width: 240px;
-            padding-left: 16px;
-            padding-right: 16px;
-            overflow-y: auto;
-            box-shadow: 3px 0 16px rgba(0,0,0,0.4);
-        }
-        .layout.auto-hide #toolbar:hover > *,
-        .layout.auto-hide #toolbar:focus-within > * {
-            opacity: 1;
-            pointer-events: auto;
-            transition: opacity 0.15s ease 0.05s;
-        }
-        .layout.auto-hide .canvas-wrap {
-            width: 100%;
-        }
     }
 
     .tool-group {
@@ -198,7 +142,7 @@
         transition: all 0.15s;
     }
 
-    .pen-btn:hover, .text-style-btn:hover {
+    .pen-btn:hover, .text-style-btn:hover, .shape-btn:hover {
         background: rgba(200,155,60,0.15);
     }
 
@@ -227,7 +171,6 @@
         background: var(--parchment);
         border: 1px solid rgba(43,38,32,0.25);
     }
-    .page-preview.plain { }
     .page-preview.lined {
         background-image: repeating-linear-gradient(to bottom, transparent, transparent 5px, rgba(43,38,32,0.35) 5px, rgba(43,38,32,0.35) 6px);
     }
@@ -333,7 +276,7 @@
         transform: translateX(-50%) translateY(0);
     }
 
-    /* ---------- SHORTCUTS LEGEND ---------- */
+    /* ---------- SHORTCUTS ---------- */
     .shortcuts-legend {
         font-size: 10.5px;
         color: #8fa89b;
@@ -431,51 +374,67 @@
         background: transparent;
     }
 
+    /* Dynamic Cursor Feedback Ring */
+    #brush-cursor {
+        position: absolute;
+        pointer-events: none;
+        border: 1.5px solid var(--gold);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        z-index: 20;
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
+    }
+
     .laser-dot {
         position: absolute;
-        width: 11px;
-        height: 11px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
-        background: radial-gradient(circle, #fff 0%, #ff4433 45%, #d81f0f 100%);
-        box-shadow: 0 0 8px 2px rgba(255,50,30,0.75), 0 0 3px 1px rgba(255,255,255,0.8);
+        background: radial-gradient(circle, rgba(230,60,50,0.95) 0%, rgba(230,60,50,0.55) 55%, rgba(230,60,50,0) 100%);
         pointer-events: none;
         transform: translate(-50%, -50%);
-        animation: laserFade 0.5s ease-out forwards;
+        animation: laserFade 0.8s ease-out forwards;
         z-index: 10;
     }
     @keyframes laserFade {
-        0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        70%  { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
-        100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
+        0%   { opacity: 1;   transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0;   transform: translate(-50%, -50%) scale(2.4); }
     }
 
     #text-input-overlay {
         position: absolute;
         display: none;
         direction: rtl;
-        border: none;
-        border-bottom: 2px dashed var(--gold);
-        background: rgba(244,236,216,0.92);
+        border: 1px dashed var(--gold);
+        background: rgba(244,236,216,0.95);
         color: var(--ink-black);
-        padding: 4px 6px;
+        padding: 6px;
         outline: none;
-        min-width: 140px;
+        min-width: 160px;
+        min-height: 48px;
+        resize: both;
+        overflow: hidden;
+        z-index: 30;
     }
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 780px) {
-        .layout { flex-direction: column; height: auto; }
+        .layout { flex-direction: column; height: calc(100vh - 61px); }
         #toolbar {
             width: 100%;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
             gap: 14px;
             border-right: none;
             border-bottom: 2px solid var(--gold);
-            max-height: 220px;
+            max-height: 150px;
+            padding: 10px;
         }
-        .tool-group { margin-bottom: 0; min-width: 150px; }
-        .canvas-wrap { height: 60vh; }
+        .tool-group { margin-bottom: 0; min-width: 160px; flex-shrink: 0; }
+        .canvas-wrap { flex: 1; }
         .star-divider::before, .star-divider::after { width: 24px; }
     }
 </style>
@@ -487,10 +446,7 @@
         <span class="title">سبورة</span>
         <span class="subtitle">Qalam Board</span>
     </div>
-    <div style="display:flex; align-items:center; gap:18px;">
-        <button id="pin-toggle-btn" class="pin-btn" title="Toggle sidebar auto-hide">📌 Sidebar Pinned</button>
-        <div class="star-divider">✦</div>
-    </div>
+    <div class="star-divider">✦</div>
 </header>
 
 <div class="layout">
@@ -538,7 +494,7 @@
                     Laser
                 </button>
             </div>
-            <div style="font-size:10.5px; color:#8fa89b; margin-top:8px;">Circle/Box/Line: click and drag. Laser: click anywhere, fades on its own.</div>
+            <div style="font-size:10.5px; color:#8fa89b; margin-top:8px;">Circle/Box/Line: click and drag. Laser: click anywhere.</div>
         </div>
 
         <div class="tool-group">
@@ -552,7 +508,7 @@
             </div>
             <div class="custom-color-row">
                 <input type="color" id="custom-color" value="#2b2620">
-                <label for="custom-color">Custom color — pick any shade</label>
+                <label for="custom-color">Custom color shade</label>
             </div>
         </div>
 
@@ -567,7 +523,7 @@
         <div class="tool-group">
             <div class="tool-group-label">Arabic Text</div>
             <div class="pen-row">
-                <button class="text-style-btn" data-style="naskh" style="grid-column: span 2;">
+                <button class="text-style-btn active" data-style="naskh" style="grid-column: span 2;">
                     <span style="font-family:'Amiri',serif; font-size:16px;">نسخ Naskh</span>
                 </button>
                 <button class="text-style-btn" data-style="heading" style="grid-column: span 2;">
@@ -577,7 +533,7 @@
                     <span style="font-family:'Jost',sans-serif; font-size:14px;">Simple بسيط</span>
                 </button>
             </div>
-            <div style="font-size:10.5px; color:#8fa89b; margin-top:8px;">Click a style, then click the board to type.</div>
+            <button class="action-btn" id="tool-text-btn" style="margin-top:10px;">✎ Place Text</button>
         </div>
 
         <div class="tool-group">
@@ -639,7 +595,8 @@
         </svg>
         <canvas id="page-canvas"></canvas>
         <canvas id="board-canvas"></canvas>
-        <input type="text" id="text-input-overlay">
+        <div id="brush-cursor"></div>
+        <textarea id="text-input-overlay"></textarea>
     </div>
     <div id="toast"></div>
 </div>
@@ -650,6 +607,7 @@
     const pageCanvas = document.getElementById("page-canvas");
     const pageCtx = pageCanvas.getContext("2d");
     const textOverlay = document.getElementById("text-input-overlay");
+    const brushCursor = document.getElementById("brush-cursor");
     const sizeSlider = document.getElementById("pen-size");
     const sizeLabel = document.getElementById("size-label");
 
@@ -676,7 +634,7 @@
         simple:  { family: "'Jost', sans-serif", weight: "500", sizeMult: 5.4 }
     };
 
-    // ---------- toast ----------
+    // ---------- Toast ----------
     let toastTimer = null;
     function showToast(message) {
         const toast = document.getElementById("toast");
@@ -686,7 +644,7 @@
         toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
     }
 
-    // ---------- undo / redo ----------
+    // ---------- Undo / Redo ----------
     const MAX_HISTORY = 25;
     let undoStack = [];
     let redoStack = [];
@@ -726,7 +684,7 @@
     document.getElementById("undo-btn").addEventListener("click", undo);
     document.getElementById("redo-btn").addEventListener("click", redo);
 
-    // ---------- persistence (localStorage — stays on this device/browser only) ----------
+    // ---------- Persistence ----------
     const STORAGE_KEY = "sabora_board_v1";
 
     function saveBoard(silent) {
@@ -778,7 +736,7 @@
 
     document.getElementById("save-board-btn").addEventListener("click", () => saveBoard(false));
 
-    // ---------- page style (drawn on the bottom layer, never touches ink) ----------
+    // ---------- Page Styles ----------
     function drawPageStyle() {
         const w = pageCanvas.clientWidth;
         const h = pageCanvas.clientHeight;
@@ -822,7 +780,6 @@
                 }
             }
         }
-        // "plain" draws nothing extra — just the parchment fill above.
     }
 
     document.querySelectorAll(".page-style-btn").forEach(btn => {
@@ -834,7 +791,7 @@
         });
     });
 
-    // ---------- canvas sizing (device-pixel aware, keeps content on resize) ----------
+    // ---------- Canvas Sizing ----------
     function resizeCanvas() {
         const wrap = canvas.parentElement;
         const dpr = window.devicePixelRatio || 1;
@@ -860,49 +817,19 @@
     resizeCanvas();
     loadSavedBoard();
 
-    // ---------- sidebar pin / auto-hide ----------
-    const SIDEBAR_PIN_KEY = "sabora_sidebar_pinned";
-    const layoutEl = document.querySelector(".layout");
-    const pinToggleBtn = document.getElementById("pin-toggle-btn");
-    let sidebarPinned = true;
-    try {
-        const savedPin = localStorage.getItem(SIDEBAR_PIN_KEY);
-        if (savedPin !== null) sidebarPinned = savedPin === "true";
-    } catch (err) {
-        console.error("Reading sidebar preference failed:", err);
-    }
-
-    function applySidebarMode() {
-        layoutEl.classList.toggle("auto-hide", !sidebarPinned);
-        pinToggleBtn.textContent = sidebarPinned ? "📌 Sidebar Pinned" : "📍 Auto-Hide (hover left edge)";
-    }
-    applySidebarMode();
-
-    pinToggleBtn.addEventListener("click", () => {
-        sidebarPinned = !sidebarPinned;
-        try {
-            localStorage.setItem(SIDEBAR_PIN_KEY, String(sidebarPinned));
-        } catch (err) {
-            console.error("Saving sidebar preference failed:", err);
-        }
-        applySidebarMode();
-        showToast(sidebarPinned ? "Sidebar pinned open" : "Sidebar set to auto-hide — hover the left edge");
-    });
-
-    // ---------- shared: clear every mode before switching to a new one ----------
+    // ---------- Tool Selectors ----------
     function clearAllModes() {
         usingTextTool = false;
         usingEraser = false;
         usingShape = false;
         usingLaser = false;
+        document.getElementById("tool-text-btn").classList.remove("active");
         document.getElementById("tool-eraser-btn").classList.remove("active");
         document.getElementById("laser-btn").classList.remove("active");
         document.querySelectorAll(".pen-btn").forEach(b => b.classList.remove("active"));
         document.querySelectorAll(".shape-btn").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".text-style-btn").forEach(b => b.classList.remove("active"));
     }
 
-    // ---------- pen tool selection ----------
     document.querySelectorAll(".pen-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             clearAllModes();
@@ -911,17 +838,14 @@
         });
     });
 
-    // ---------- text style selection (picking a style also arms the text tool, like a pen) ----------
     document.querySelectorAll(".text-style-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-            clearAllModes();
-            usingTextTool = true;
-            currentTextStyle = btn.dataset.style;
+            document.querySelectorAll(".text-style-btn").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
+            currentTextStyle = btn.dataset.style;
         });
     });
 
-    // ---------- ink color selection ----------
     document.querySelectorAll(".ink-swatch").forEach(sw => {
         sw.addEventListener("click", () => {
             document.querySelectorAll(".ink-swatch").forEach(s => s.classList.remove("active"));
@@ -930,24 +854,28 @@
             document.getElementById("custom-color").value = currentColor;
         });
     });
+
     document.getElementById("custom-color").addEventListener("input", (e) => {
         document.querySelectorAll(".ink-swatch").forEach(s => s.classList.remove("active"));
         currentColor = e.target.value;
     });
 
-    // ---------- size slider ----------
     sizeSlider.addEventListener("input", () => {
         sizeLabel.textContent = sizeSlider.value;
     });
 
-    // ---------- eraser toggle ----------
     document.getElementById("tool-eraser-btn").addEventListener("click", (e) => {
         clearAllModes();
         usingEraser = true;
         e.target.closest("button").classList.add("active");
     });
 
-    // ---------- shape tools (circle / box / line) ----------
+    document.getElementById("tool-text-btn").addEventListener("click", (e) => {
+        clearAllModes();
+        usingTextTool = true;
+        e.target.closest("button").classList.add("active");
+    });
+
     document.querySelectorAll(".shape-btn[data-shape]").forEach(btn => {
         btn.addEventListener("click", () => {
             clearAllModes();
@@ -957,7 +885,6 @@
         });
     });
 
-    // ---------- laser pointer toggle ----------
     document.getElementById("laser-btn").addEventListener("click", (e) => {
         clearAllModes();
         usingLaser = true;
@@ -970,22 +897,50 @@
         dot.style.left = x + "px";
         dot.style.top = y + "px";
         document.getElementById("canvas-wrap").appendChild(dot);
-        setTimeout(() => dot.remove(), 520);
+        setTimeout(() => dot.remove(), 850);
     }
 
-    // ---------- drawing ----------
+    // ---------- Dynamic Brush Cursor Ring ----------
+    canvas.addEventListener("mousemove", (e) => {
+        const pos = getPos(e);
+        if (usingLaser || usingTextTool) {
+            brushCursor.style.display = "none";
+            return;
+        }
+        let size = Number(sizeSlider.value);
+        if (usingEraser) {
+            size *= 2;
+        } else if (!usingShape) {
+            size *= (PEN_PRESETS[currentPenTool]?.sizeMultiplier || 1);
+        }
+        brushCursor.style.width = `${size}px`;
+        brushCursor.style.height = `${size}px`;
+        brushCursor.style.left = `${pos.x}px`;
+        brushCursor.style.top = `${pos.y}px`;
+        brushCursor.style.display = "block";
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+        brushCursor.style.display = "none";
+    });
+
+    // ---------- Calligraphy Drawing Logic ----------
     let drawing = false;
     let lastPos = null;
     let shapeStartPos = null;
     let shapeSnapshot = null;
     let lastLaserSpawn = 0;
-
+    let didDrawThisStroke = false;
 
     function getPos(e) {
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top, clientX, clientY, rectTop: rect.top, rectLeft: rect.left };
+        return { x: clientX - rect.left, y: clientY - rect.top, clientX, clientY };
+    }
+
+    function midPointBtw(p1, p2) {
+        return { x: p1.x + (p2.x - p1.x) / 2, y: p1.y + (p2.y - p1.y) / 2 };
     }
 
     function drawShapePreview(shape, start, end) {
@@ -1012,8 +967,6 @@
         }
         ctx.restore();
     }
-
-    let didDrawThisStroke = false;
 
     function startDraw(e) {
         const pos = getPos(e);
@@ -1043,6 +996,8 @@
         drawing = true;
         didDrawThisStroke = false;
         lastPos = pos;
+        lastPos.midX = pos.x;
+        lastPos.midY = pos.y;
     }
 
     function moveDraw(e) {
@@ -1067,32 +1022,31 @@
             return;
         }
 
+        const midPoint = midPointBtw(lastPos, pos);
+
+        ctx.save();
+        ctx.beginPath();
         if (usingEraser) {
-            ctx.save();
             ctx.globalCompositeOperation = "destination-out";
-            ctx.lineCap = "round";
             ctx.lineWidth = Number(sizeSlider.value) * 2;
-            ctx.beginPath();
-            ctx.moveTo(lastPos.x, lastPos.y);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.restore();
         } else {
             const preset = PEN_PRESETS[currentPenTool];
-            ctx.save();
             ctx.globalCompositeOperation = preset.composite;
             ctx.globalAlpha = preset.opacity;
             ctx.strokeStyle = currentColor;
             ctx.lineWidth = Number(sizeSlider.value) * preset.sizeMultiplier;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.beginPath();
-            ctx.moveTo(lastPos.x, lastPos.y);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.restore();
         }
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        ctx.moveTo(lastPos.midX || lastPos.x, lastPos.midY || lastPos.y);
+        ctx.quadraticCurveTo(lastPos.x, lastPos.y, midPoint.x, midPoint.y);
+        ctx.stroke();
+        ctx.restore();
+
         lastPos = pos;
+        lastPos.midX = midPoint.x;
+        lastPos.midY = midPoint.y;
         didDrawThisStroke = true;
         e.preventDefault();
     }
@@ -1104,10 +1058,7 @@
         }
 
         if (usingShape) {
-            if (drawing) {
-                // Final shape is already on the canvas from the last moveDraw preview.
-                saveBoard(true);
-            }
+            if (drawing) saveBoard(true);
             drawing = false;
             shapeSnapshot = null;
             shapeStartPos = null;
@@ -1118,7 +1069,6 @@
         if (drawing && didDrawThisStroke) {
             saveBoard(true);
         } else if (drawing && !didDrawThisStroke && undoStack.length > 0) {
-            // Nothing was actually drawn (just a click) — drop the snapshot we took for nothing.
             undoStack.pop();
         }
         drawing = false;
@@ -1133,7 +1083,7 @@
     canvas.addEventListener("touchmove", moveDraw);
     canvas.addEventListener("touchend", endDraw);
 
-    // ---------- Arabic text tool ----------
+    // ---------- Arabic Multi-line Text Tool ----------
     let pendingTextPos = null;
 
     function openTextInput(pos) {
@@ -1149,32 +1099,48 @@
         textOverlay.focus();
     }
 
+    function commitText() {
+        if (!pendingTextPos) return;
+        const text = textOverlay.value;
+        textOverlay.style.display = "none";
+        if (text.trim()) {
+            pushUndoSnapshot();
+            const preset = TEXT_PRESETS[currentTextStyle];
+            const fontSize = Number(sizeSlider.value) * preset.sizeMult;
+            const lines = text.split('\n');
+
+            ctx.save();
+            ctx.fillStyle = currentColor;
+            ctx.font = `${preset.weight} ${fontSize}px ${preset.family}`;
+            ctx.direction = "rtl";
+            ctx.textAlign = "right";
+            ctx.textBaseline = "alphabetic";
+
+            lines.forEach((line, index) => {
+                ctx.fillText(line, pendingTextPos.x, pendingTextPos.y + (index * fontSize * 1.2));
+            });
+
+            ctx.restore();
+            saveBoard(true);
+        }
+        pendingTextPos = null;
+    }
+
     textOverlay.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && pendingTextPos) {
-            const text = textOverlay.value.trim();
-            textOverlay.style.display = "none";
-            if (text) {
-                pushUndoSnapshot();
-                const preset = TEXT_PRESETS[currentTextStyle];
-                const fontSize = Number(sizeSlider.value) * preset.sizeMult;
-                ctx.save();
-                ctx.fillStyle = currentColor;
-                ctx.font = `${preset.weight} ${fontSize}px ${preset.family}`;
-                ctx.direction = "rtl";
-                ctx.textAlign = "right";
-                ctx.textBaseline = "alphabetic";
-                ctx.fillText(text, pendingTextPos.x, pendingTextPos.y);
-                ctx.restore();
-                saveBoard(true);
-            }
-            pendingTextPos = null;
+        if (e.key === "Enter" && e.ctrlKey) {
+            e.preventDefault();
+            commitText();
         } else if (e.key === "Escape") {
             textOverlay.style.display = "none";
             pendingTextPos = null;
         }
     });
 
-    // ---------- clear board ----------
+    textOverlay.addEventListener("blur", () => {
+        commitText();
+    });
+
+    // ---------- Clear Board ----------
     document.getElementById("clear-board-btn").addEventListener("click", () => {
         if (!confirm("Clear the whole board? This can't be undone from a fresh page load, but Undo will work right now.")) return;
         pushUndoSnapshot();
@@ -1182,7 +1148,7 @@
         saveBoard(true);
     });
 
-    // ---------- save as image (composited onto parchment) ----------
+    // ---------- Save as Image ----------
     document.getElementById("save-image-btn").addEventListener("click", () => {
         const temp = document.createElement("canvas");
         temp.width = canvas.width;
@@ -1196,9 +1162,8 @@
         link.click();
     });
 
-    // ---------- keyboard shortcuts ----------
+    // ---------- Keyboard Shortcuts ----------
     document.addEventListener("keydown", (e) => {
-        // Don't hijack keys while typing Arabic text into the overlay.
         if (document.activeElement === textOverlay) return;
 
         const key = e.key.toLowerCase();
@@ -1214,10 +1179,7 @@
         else if (key === "3") document.querySelector('.pen-btn[data-tool="marker"]').click();
         else if (key === "4") document.querySelector('.pen-btn[data-tool="highlighter"]').click();
         else if (key === "e") document.getElementById("tool-eraser-btn").click();
-        else if (key === "t") {
-            const activeStyle = document.querySelector('.text-style-btn.active') || document.querySelector('.text-style-btn[data-style="naskh"]');
-            activeStyle.click();
-        }
+        else if (key === "t") document.getElementById("tool-text-btn").click();
         else if (key === "c") document.querySelector('.shape-btn[data-shape="circle"]').click();
         else if (key === "b") document.querySelector('.shape-btn[data-shape="box"]').click();
         else if (key === "l") document.querySelector('.shape-btn[data-shape="line"]').click();
@@ -1231,12 +1193,10 @@
         }
     });
 
-    // Warn before an accidental tab close loses unsaved work (autosave covers most cases, this is just a safety net).
     window.addEventListener("beforeunload", () => {
         saveBoard(true);
     });
 
-    // Preload Amiri so the first piece of text on the canvas renders correctly, not with a fallback font.
     document.fonts.load("400 40px Amiri");
     document.fonts.load("700 40px Amiri");
 </script>
