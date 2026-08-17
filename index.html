@@ -82,10 +82,25 @@
         opacity: 0.5;
     }
 
+    .pin-btn {
+        background: rgba(244,236,216,0.06);
+        border: 1px solid var(--gold);
+        color: var(--gold-bright);
+        border-radius: 5px;
+        padding: 7px 12px;
+        cursor: pointer;
+        font-family: var(--font-ui);
+        font-size: 12px;
+        white-space: nowrap;
+        transition: background 0.15s;
+    }
+    .pin-btn:hover { background: rgba(200,155,60,0.2); }
+
     /* ---------- LAYOUT ---------- */
     .layout {
         display: flex;
         height: calc(100vh - 61px);
+        position: relative;
     }
 
     /* ---------- SIDEBAR (the "margin") ---------- */
@@ -96,6 +111,34 @@
         border-right: 2px solid var(--gold);
         padding: 18px 16px;
         overflow-y: auto;
+    }
+
+    /* Auto-hide mode: sidebar becomes a thin edge strip that expands on hover,
+       overlaying the canvas instead of reserving permanent space for itself. */
+    @media (min-width: 781px) {
+        .layout.auto-hide #toolbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 16px;
+            padding-left: 4px;
+            padding-right: 4px;
+            overflow: hidden;
+            z-index: 20;
+            box-shadow: 3px 0 16px rgba(0,0,0,0.4);
+            transition: width 0.18s ease;
+        }
+        .layout.auto-hide #toolbar:hover,
+        .layout.auto-hide #toolbar:focus-within {
+            width: 240px;
+            padding-left: 16px;
+            padding-right: 16px;
+            overflow-y: auto;
+        }
+        .layout.auto-hide .canvas-wrap {
+            width: 100%;
+        }
     }
 
     .tool-group {
@@ -429,7 +472,10 @@
         <span class="title">سبورة</span>
         <span class="subtitle">Qalam Board</span>
     </div>
-    <div class="star-divider">✦</div>
+    <div style="display:flex; align-items:center; gap:18px;">
+        <button id="pin-toggle-btn" class="pin-btn" title="Toggle sidebar auto-hide">📌 Sidebar Pinned</button>
+        <div class="star-divider">✦</div>
+    </div>
 </header>
 
 <div class="layout">
@@ -798,6 +844,35 @@
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
     loadSavedBoard();
+
+    // ---------- sidebar pin / auto-hide ----------
+    const SIDEBAR_PIN_KEY = "sabora_sidebar_pinned";
+    const layoutEl = document.querySelector(".layout");
+    const pinToggleBtn = document.getElementById("pin-toggle-btn");
+    let sidebarPinned = true;
+    try {
+        const savedPin = localStorage.getItem(SIDEBAR_PIN_KEY);
+        if (savedPin !== null) sidebarPinned = savedPin === "true";
+    } catch (err) {
+        console.error("Reading sidebar preference failed:", err);
+    }
+
+    function applySidebarMode() {
+        layoutEl.classList.toggle("auto-hide", !sidebarPinned);
+        pinToggleBtn.textContent = sidebarPinned ? "📌 Sidebar Pinned" : "📍 Auto-Hide (hover left edge)";
+    }
+    applySidebarMode();
+
+    pinToggleBtn.addEventListener("click", () => {
+        sidebarPinned = !sidebarPinned;
+        try {
+            localStorage.setItem(SIDEBAR_PIN_KEY, String(sidebarPinned));
+        } catch (err) {
+            console.error("Saving sidebar preference failed:", err);
+        }
+        applySidebarMode();
+        showToast(sidebarPinned ? "Sidebar pinned open" : "Sidebar set to auto-hide — hover the left edge");
+    });
 
     // ---------- shared: clear every mode before switching to a new one ----------
     function clearAllModes() {
