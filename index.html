@@ -1,1 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سبورة — Qalam Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --ink-black: #2b2620;
+        --parchment: #f4ecd8;
+        --emerald: #0d3b2e;
+        --emerald-deep: #082820;
+        --gold: #c89b3c;
+        --gold-bright: #e0b45a;
+        --maroon: #7a2e2e;
+        --lapis: #2d4a6b;
+        --font-arabic: 'Amiri', serif;
+        --font-ui: 'Jost', sans-serif;
+        
+        --glass-bg: rgba(8, 40, 32, 0.85);
+        --glass-border: rgba(200, 155, 60, 0.25);
+    }
 
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: var(--font-ui);
+        background-color: var(--emerald-deep);
+        color: var(--parchment);
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* ---------- FLOATING UI PANELS ---------- */
+    .floating-panel {
+        position: absolute;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        z-index: 100;
+    }
+
+    /* Header Panel (Top Left) */
+    .top-left-panel {
+        top: 20px;
+        left: 20px;
+        border-radius: 16px;
+        padding: 12px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 8px;
+    }
+
+    .brand .title {
+        font-family: var(--font-arabic);
+        font-size: 26px;
+        color: var(--gold-bright);
+        letter-spacing: 1px;
+    }
+
+    .brand .subtitle {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #9db8ab;
+    }
+
+    /* Actions Panel (Top Right) */
+    .top-right-panel {
+        top: 20px;
+        right: 20px;
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+    }
+
+    /* Main Dock (Bottom Center) */
+    .bottom-dock {
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 24px;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .dock-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-right: 20px;
+        border-right: 1px solid rgba(200, 155, 60, 0.15);
+    }
+    .dock-section:last-child {
+        border-right: none;
+        padding-right: 0;
+    }
+    .dock-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #8fa89b;
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        opacity: 0.8;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .tool-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(244,236,216,0.04);
+        border: 1px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--parchment);
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: var(--font-ui);
+        font-size: 11px;
+        gap: 4px;
+        position: relative;
+    }
+
+    .tool-btn:hover {
+        background: rgba(200,155,60,0.12);
+        transform: translateY(-2px);
+    }
+
+    .tool-btn.active {
+        background: var(--gold);
+        color: var(--emerald-deep);
+        border-color: var(--gold-bright);
+        box-shadow: 0 4px 12px rgba(200,155,60,0.3);
+        font-weight: 600;
+    }
+
+    .tool-btn.danger { color: #e57373; }
+    .tool-btn.danger:hover { background: rgba(229, 115, 115, 0.15); color: #ef9a9a; }
+
+    /* specific button styling */
+    .action-btn { width: auto; padding: 0 16px; height: 40px; font-size: 13px; }
+    .small-btn { width: auto; padding: 0 10px; height: 32px; font-size: 12px; border-radius: 8px; border: 1px solid var(--glass-border); }
+    
+    .pen-preview { width: 24px; height: 4px; border-radius: 2px; background: currentColor; }
+    .pen-preview.fine { height: 2px; width: 20px; }
+    .pen-preview.brush { height: 6px; }
+    .pen-preview.marker { height: 5px; width: 22px; }
+    .pen-preview.highlighter { height: 8px; opacity: 0.5; }
+
+    /* ---------- INK COLORS ---------- */
+    .ink-swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid rgba(244,236,216,0.25);
+        box-shadow: inset 0 -2px 4px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+    }
+    .ink-swatch:hover { transform: scale(1.15); }
+    .ink-swatch.active { border-color: var(--parchment); box-shadow: 0 0 0 3px var(--gold-bright), inset 0 -2px 4px rgba(0,0,0,0.35); transform: scale(1.1); }
+    
+    .color-picker-wrap { position: relative; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); }
+    #custom-color { position: absolute; top: -10px; left: -10px; width: 50px; height: 50px; cursor: pointer; border: none; padding: 0; background: none; }
+
+    /* ---------- SLIDER ---------- */
+    .size-slider-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 10px;
+    }
+    input[type="range"] {
+        width: 80px;
+        accent-color: var(--gold);
+        cursor: pointer;
+    }
+    #size-label { font-size: 12px; color: var(--gold); font-weight: 600; width: 16px; text-align: center; }
+
+    /* ---------- TOAST ---------- */
+    #toast {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--gold);
+        color: var(--emerald-deep);
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 30px;
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        z-index: 200;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ---------- CANVAS AREA ---------- */
+    .canvas-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.08) 100%), var(--parchment);
+        z-index: 1;
+    }
+
+    #board-canvas, #page-canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; touch-action: none; }
+    #page-canvas { z-index: 1; pointer-events: none; }
+    #board-canvas { z-index: 2; cursor: crosshair; background: transparent; }
+
+    /* Dynamic Cursor Feedback Ring */
+    #brush-cursor {
+        position: absolute;
+        pointer-events: none;
+        border: 1.5px solid var(--gold);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        z-index: 20;
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
+    }
+
+    .laser-dot {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(230,60,50,0.95) 0%, rgba(230,60,50,0.55) 55%, rgba(230,60,50,0) 100%);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: laserFade 0.8s ease-out forwards;
+        z-index: 10;
+    }
+    @keyframes laserFade {
+        0%   { opacity: 1;   transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0;   transform: translate(-50%, -50%) scale(2.4); }
+    }
+
+    #text-input-overlay {
+        position: absolute;
+        display: none;
+        direction: rtl;
+        border: 2px dashed var(--gold);
+        background: rgba(244,236,216,0.85);
+        backdrop-filter: blur(4px);
+        color: var(--ink-black);
+        padding: 8px 12px;
+        outline: none;
+        min-width: 200px;
+        min-height: 60px;
+        border-radius: 8px;
+        resize: both;
+        overflow: hidden;
+        z-index: 30;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+        .bottom-dock { width: 90vw; overflow-x: auto; justify-content: flex-start; border-radius: 16px; bottom: 16px; padding: 12px; }
+        .top-left-panel { top: 16px; left: 16px; }
+        .top-right-panel { top: 16px; right: 16px; flex-wrap: wrap; justify-content: flex-end; max-width: 160px; }
+        .dock-label { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="page-canvas"></canvas>
+    <canvas id="board-canvas"></canvas>
+    <div id="brush-cursor"></div>
+    <textarea id="text-input-overlay" placeholder="اكتب هنا... (Ctrl+Enter للحفظ)"></textarea>
+</div>
+
+<!-- Header & Layout Styles -->
+<div class="floating-panel top-left-panel">
+    <div class="brand">
+        <span class="title">سبورة</span>
+        <span class="subtitle">Qalam Board</span>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <button class="tool-btn small-btn page-style-btn active" data-style="plain">Plain</button>
+        <button class="tool-btn small-btn page-style-btn" data-style="lined">Lined</button>
+        <button class="tool-btn small-btn page-style-btn" data-style="grid">Grid</button>
+        <button class="tool-btn small-btn page-style-btn" data-style="dotted">Dots</button>
+    </div>
+    <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button class="tool-btn small-btn text-style-btn active" data-style="naskh" style="font-family:'Amiri',serif;">نسخ</button>
+        <button class="tool-btn small-btn text-style-btn" data-style="heading" style="font-family:'Amiri',serif; font-weight:700;">عنوان</button>
+        <button class="tool-btn small-btn text-style-btn" data-style="simple">بسيط</button>
+    </div>
+</div>
+
+<!-- Actions (Top Right) -->
+<div class="floating-panel top-right-panel">
+    <button class="tool-btn action-btn" id="tool-text-btn" title="Text (T)">✎ Text</button>
+    <button class="tool-btn action-btn" id="tool-eraser-btn" title="Eraser (E)">🧽 Eraser</button>
+    <div style="width: 1px; background: rgba(200,155,60,0.2); margin: 0 4px;"></div>
+    <button class="tool-btn action-btn" id="undo-btn" title="Undo (Ctrl+Z)">↺</button>
+    <button class="tool-btn action-btn" id="redo-btn" title="Redo (Ctrl+Y)">↻</button>
+    <div style="width: 1px; background: rgba(200,155,60,0.2); margin: 0 4px;"></div>
+    <button class="tool-btn action-btn" id="save-image-btn" title="Download">⬇</button>
+    <button class="tool-btn action-btn danger" id="clear-board-btn" title="Clear">✕ Clear</button>
+</div>
+
+<!-- Main Tool Dock (Bottom Center) -->
+<div class="floating-panel bottom-dock">
+    
+    <div class="dock-section" style="position: relative;">
+        <div class="dock-label">Pen</div>
+        <button class="tool-btn pen-btn active" data-tool="fine" title="Fine (1)">
+            <span class="pen-preview fine"></span>
+            Fine
+        </button>
+        <button class="tool-btn pen-btn" data-tool="brush" title="Brush (2)">
+            <span class="pen-preview brush"></span>
+            Brush
+        </button>
+        <button class="tool-btn pen-btn" data-tool="marker" title="Marker (3)">
+            <span class="pen-preview marker"></span>
+            Marker
+        </button>
+        <button class="tool-btn pen-btn" data-tool="highlighter" title="Highlight (4)">
+            <span class="pen-preview highlighter"></span>
+            High
+        </button>
+    </div>
+
+    <div class="dock-section" style="position: relative;">
+        <div class="dock-label">Shapes</div>
+        <button class="tool-btn shape-btn" data-shape="circle" title="Circle (C)"><span style="font-size:18px;">◯</span></button>
+        <button class="tool-btn shape-btn" data-shape="box" title="Box (B)"><span style="font-size:16px;">▭</span></button>
+        <button class="tool-btn shape-btn" data-shape="line" title="Line (L)"><span style="font-size:16px;">╱</span></button>
+        <button class="tool-btn shape-btn" id="laser-btn" title="Laser (P)"><span style="font-size:16px; color:#e63c32;">●</span></button>
+    </div>
+
+    <div class="dock-section" style="position: relative;">
+        <div class="dock-label">Ink</div>
+        <div class="ink-swatch active" style="background:#2b2620" data-color="#2b2620"></div>
+        <div class="ink-swatch" style="background:#7a2e2e" data-color="#7a2e2e"></div>
+        <div class="ink-swatch" style="background:#0d3b2e" data-color="#0d3b2e"></div>
+        <div class="ink-swatch" style="background:#2d4a6b" data-color="#2d4a6b"></div>
+        <div class="ink-swatch" style="background:#c89b3c" data-color="#c89b3c"></div>
+        <div class="color-picker-wrap" title="Custom Color">
+            <input type="color" id="custom-color" value="#2b2620">
+        </div>
+    </div>
+
+    <div class="dock-section" style="position: relative; border-right: none;">
+        <div class="dock-label">Size</div>
+        <div class="size-slider-wrap">
+            <input type="range" id="pen-size" min="2" max="32" value="6">
+            <span id="size-label">6</span>
+        </div>
+    </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+    const canvasWrap = document.getElementById("canvas-wrap");
+    const canvas = document.getElementById("board-canvas");
+    const ctx = canvas.getContext("2d");
+    const pageCanvas = document.getElementById("page-canvas");
+    const pageCtx = pageCanvas.getContext("2d");
+    const textOverlay = document.getElementById("text-input-overlay");
+    const brushCursor = document.getElementById("brush-cursor");
+    const sizeSlider = document.getElementById("pen-size");
+    const sizeLabel = document.getElementById("size-label");
+
+    let currentPenTool = "fine";
+    let currentTextStyle = "naskh";
+    let currentColor = "#2b2620";
+    let currentPageStyle = "plain";
+    let usingTextTool = false;
+    let usingEraser = false;
+    let usingShape = false;
+    let currentShape = "circle";
+    let usingLaser = false;
+
+    const PEN_PRESETS = {
+        fine:        { sizeMultiplier: 0.6, opacity: 1,    composite: "source-over" },
+        brush:       { sizeMultiplier: 1.4, opacity: 0.92, composite: "source-over" },
+        marker:      { sizeMultiplier: 1.8, opacity: 1,    composite: "source-over" },
+        highlighter: { sizeMultiplier: 3.2, opacity: 0.35, composite: "multiply"    }
+    };
+
+    const TEXT_PRESETS = {
+        naskh:   { family: "'Amiri', serif",    weight: "400", sizeMult: 6.2 },
+        heading: { family: "'Amiri', serif",    weight: "700", sizeMult: 8.5 },
+        simple:  { family: "'Jost', sans-serif", weight: "500", sizeMult: 5.4 }
+    };
+
+    // ---------- Toast ----------
+    let toastTimer = null;
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    // ---------- Undo / Redo ----------
+    const MAX_HISTORY = 30;
+    let undoStack = [];
+    let redoStack = [];
+
+    function pushUndoSnapshot() {
+        try {
+            undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            if (undoStack.length > MAX_HISTORY) undoStack.shift();
+            redoStack = [];
+        } catch (err) {
+            console.error("Couldn't snapshot for undo:", err);
+        }
+    }
+
+    function undo() {
+        if (undoStack.length === 0) return showToast("Nothing to undo");
+        redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        ctx.putImageData(undoStack.pop(), 0, 0);
+        saveBoard(true);
+    }
+
+    function redo() {
+        if (redoStack.length === 0) return showToast("Nothing to redo");
+        undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        ctx.putImageData(redoStack.pop(), 0, 0);
+        saveBoard(true);
+    }
+
+    document.getElementById("undo-btn").addEventListener("click", undo);
+    document.getElementById("redo-btn").addEventListener("click", redo);
+
+    // ---------- Persistence ----------
+    const STORAGE_KEY = "sabora_board_pro_v1";
+
+    function saveBoard(silent) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                ink: canvas.toDataURL(),
+                pageStyle: currentPageStyle,
+                savedAt: Date.now()
+            }));
+            if (!silent) showToast("Workspace Saved ✓");
+        } catch (err) {
+            if (!silent) showToast("Couldn't save — storage may be full");
+        }
+    }
+
+    function loadSavedBoard() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        try {
+            const payload = JSON.parse(raw);
+            if (payload.pageStyle) {
+                currentPageStyle = payload.pageStyle;
+                document.querySelectorAll(".page-style-btn").forEach(b => {
+                    b.classList.toggle("active", b.dataset.style === currentPageStyle);
+                });
+                drawPageStyle();
+            }
+            if (payload.ink) {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+                    ctx.drawImage(img, 0, 0, canvas.clientWidth, canvas.clientHeight);
+                };
+                img.src = payload.ink;
+            }
+        } catch (err) {}
+    }
+
+    // ---------- Page Styles ----------
+    function drawPageStyle() {
+        const w = pageCanvas.clientWidth;
+        const h = pageCanvas.clientHeight;
+        pageCtx.clearRect(0, 0, w, h);
+
+        pageCtx.strokeStyle = "rgba(43,38,32,0.18)";
+        pageCtx.fillStyle = "rgba(43,38,32,0.22)";
+        pageCtx.lineWidth = 1;
+
+        if (currentPageStyle === "lined") {
+            for (let y = 40; y < h; y += 40) {
+                pageCtx.beginPath(); pageCtx.moveTo(0, y + 0.5); pageCtx.lineTo(w, y + 0.5); pageCtx.stroke();
+            }
+        } else if (currentPageStyle === "grid") {
+            for (let y = 32; y < h; y += 32) {
+                pageCtx.beginPath(); pageCtx.moveTo(0, y + 0.5); pageCtx.lineTo(w, y + 0.5); pageCtx.stroke();
+            }
+            for (let x = 32; x < w; x += 32) {
+                pageCtx.beginPath(); pageCtx.moveTo(x + 0.5, 0); pageCtx.lineTo(x + 0.5, h); pageCtx.stroke();
+            }
+        } else if (currentPageStyle === "dotted") {
+            for (let y = 26; y < h; y += 26) {
+                for (let x = 26; x < w; x += 26) {
+                    pageCtx.beginPath(); pageCtx.arc(x, y, 1.4, 0, Math.PI * 2); pageCtx.fill();
+                }
+            }
+        }
+    }
+
+    document.querySelectorAll(".page-style-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".page-style-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentPageStyle = btn.dataset.style;
+            drawPageStyle();
+            saveBoard(true);
+        });
+    });
+
+    // ---------- Canvas Sizing (Full Screen) ----------
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const prevImage = canvas.width ? canvas.toDataURL() : null;
+
+        [canvas, pageCanvas].forEach(c => {
+            c.width = canvasWrap.clientWidth * dpr;
+            c.height = canvasWrap.clientHeight * dpr;
+            c.style.width = canvasWrap.clientWidth + "px";
+            c.style.height = canvasWrap.clientHeight + "px";
+            c.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0);
+        });
+
+        drawPageStyle();
+        if (prevImage) {
+            const img = new Image();
+            img.onload = () => ctx.drawImage(img, 0, 0, canvasWrap.clientWidth, canvasWrap.clientHeight);
+            img.src = prevImage;
+        }
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    loadSavedBoard();
+
+    // ---------- Tool Selectors ----------
+    function clearAllModes() {
+        usingTextTool = false;
+        usingEraser = false;
+        usingShape = false;
+        usingLaser = false;
+        document.querySelectorAll(".tool-btn").forEach(b => b.classList.remove("active"));
+    }
+
+    function syncActiveUI(targetBtn) {
+        // Keep page/text styles active visually regardless of mode
+        document.querySelector(`.page-style-btn[data-style="${currentPageStyle}"]`).classList.add('active');
+        document.querySelector(`.text-style-btn[data-style="${currentTextStyle}"]`).classList.add('active');
+        targetBtn.classList.add("active");
+    }
+
+    document.querySelectorAll(".pen-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            clearAllModes();
+            currentPenTool = btn.dataset.tool;
+            syncActiveUI(btn);
+        });
+    });
+
+    document.querySelectorAll(".text-style-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".text-style-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentTextStyle = btn.dataset.style;
+            if(usingTextTool) textOverlay.focus();
+        });
+    });
+
+    document.querySelectorAll(".ink-swatch").forEach(sw => {
+        sw.addEventListener("click", () => {
+            document.querySelectorAll(".ink-swatch").forEach(s => s.classList.remove("active"));
+            sw.classList.add("active");
+            currentColor = sw.dataset.color;
+            document.getElementById("custom-color").value = currentColor;
+        });
+    });
+
+    document.getElementById("custom-color").addEventListener("input", (e) => {
+        document.querySelectorAll(".ink-swatch").forEach(s => s.classList.remove("active"));
+        currentColor = e.target.value;
+    });
+
+    sizeSlider.addEventListener("input", () => {
+        sizeLabel.textContent = sizeSlider.value;
+    });
+
+    document.getElementById("tool-eraser-btn").addEventListener("click", (e) => {
+        clearAllModes(); usingEraser = true; syncActiveUI(e.target);
+    });
+    document.getElementById("tool-text-btn").addEventListener("click", (e) => {
+        clearAllModes(); usingTextTool = true; syncActiveUI(e.target);
+    });
+    document.getElementById("laser-btn").addEventListener("click", (e) => {
+        clearAllModes(); usingLaser = true; syncActiveUI(e.currentTarget);
+    });
+    document.querySelectorAll(".shape-btn[data-shape]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            clearAllModes(); usingShape = true; currentShape = btn.dataset.shape; syncActiveUI(btn);
+        });
+    });
+
+    function spawnLaserDot(x, y) {
+        const dot = document.createElement("div");
+        dot.className = "laser-dot";
+        dot.style.left = x + "px"; dot.style.top = y + "px";
+        canvasWrap.appendChild(dot);
+        setTimeout(() => dot.remove(), 850);
+    }
+
+    // ---------- Dynamic Brush Cursor ----------
+    canvasWrap.addEventListener("mousemove", (e) => {
+        const pos = getPos(e);
+        if (usingLaser || usingTextTool) { brushCursor.style.display = "none"; return; }
+        let size = Number(sizeSlider.value);
+        if (usingEraser) size *= 2.5;
+        else if (!usingShape) size *= (PEN_PRESETS[currentPenTool]?.sizeMultiplier || 1);
+        
+        brushCursor.style.width = `${size}px`;
+        brushCursor.style.height = `${size}px`;
+        brushCursor.style.left = `${pos.x}px`;
+        brushCursor.style.top = `${pos.y}px`;
+        brushCursor.style.display = "block";
+    });
+    canvasWrap.addEventListener("mouseleave", () => brushCursor.style.display = "none");
+
+    // ---------- Fluid Calligraphy Engine ----------
+    let drawing = false; let lastPos = null; let shapeStartPos = null; let shapeSnapshot = null; let lastLaserSpawn = 0; let didDrawThisStroke = false;
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top, clientX, clientY };
+    }
+
+    function midPointBtw(p1, p2) { return { x: p1.x + (p2.x - p1.x) / 2, y: p1.y + (p2.y - p1.y) / 2 }; }
+
+    function drawShapePreview(shape, start, end) {
+        ctx.save();
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = Number(sizeSlider.value) * 0.7;
+        ctx.lineCap = "round"; ctx.lineJoin = "round";
+        if (shape === "circle") {
+            const cx = (start.x + end.x) / 2; const cy = (start.y + end.y) / 2;
+            const rx = Math.abs(end.x - start.x) / 2; const ry = Math.abs(end.y - start.y) / 2;
+            ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx, 2), Math.max(ry, 2), 0, 0, Math.PI * 2); ctx.stroke();
+        } else if (shape === "box") {
+            ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
+        } else if (shape === "line") {
+            ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function startDraw(e) {
+        // Prevent drawing if clicking on floating panels
+        if(e.target.closest('.floating-panel')) return;
+        
+        const pos = getPos(e);
+        if (usingTextTool) { openTextInput(pos); return; }
+        if (usingLaser) { drawing = true; spawnLaserDot(pos.x, pos.y); lastLaserSpawn = Date.now(); return; }
+        if (usingShape) {
+            pushUndoSnapshot(); shapeSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            shapeStartPos = pos; drawing = true; lastPos = pos; return;
+        }
+
+        pushUndoSnapshot(); drawing = true; didDrawThisStroke = false; lastPos = pos; lastPos.midX = pos.x; lastPos.midY = pos.y;
+    }
+
+    function moveDraw(e) {
+        if (!drawing) return;
+        const pos = getPos(e);
+
+        if (usingLaser) {
+            if (Date.now() - lastLaserSpawn > 45) { spawnLaserDot(pos.x, pos.y); lastLaserSpawn = Date.now(); }
+            e.preventDefault(); return;
+        }
+
+        if (usingShape) {
+            ctx.putImageData(shapeSnapshot, 0, 0); drawShapePreview(currentShape, shapeStartPos, pos);
+            lastPos = pos; e.preventDefault(); return;
+        }
+
+        const midPoint = midPointBtw(lastPos, pos);
+
+        ctx.save(); ctx.beginPath();
+        if (usingEraser) {
+            ctx.globalCompositeOperation = "destination-out"; ctx.lineWidth = Number(sizeSlider.value) * 2.5;
+        } else {
+            const preset = PEN_PRESETS[currentPenTool];
+            ctx.globalCompositeOperation = preset.composite; ctx.globalAlpha = preset.opacity;
+            ctx.strokeStyle = currentColor; ctx.lineWidth = Number(sizeSlider.value) * preset.sizeMultiplier;
+        }
+        ctx.lineCap = "round"; ctx.lineJoin = "round";
+        ctx.moveTo(lastPos.midX || lastPos.x, lastPos.midY || lastPos.y);
+        ctx.quadraticCurveTo(lastPos.x, lastPos.y, midPoint.x, midPoint.y);
+        ctx.stroke(); ctx.restore();
+
+        lastPos = pos; lastPos.midX = midPoint.x; lastPos.midY = midPoint.y; didDrawThisStroke = true;
+        e.preventDefault();
+    }
+
+    function endDraw() {
+        if (!drawing) return;
+        if (usingShape && drawing) saveBoard(true);
+        else if (drawing && didDrawThisStroke) saveBoard(true);
+        else if (drawing && !didDrawThisStroke && undoStack.length > 0) undoStack.pop(); // click without move
+        
+        drawing = false; shapeSnapshot = null; shapeStartPos = null; lastPos = null;
+    }
+
+    canvasWrap.addEventListener("mousedown", startDraw);
+    canvasWrap.addEventListener("mousemove", moveDraw);
+    window.addEventListener("mouseup", endDraw);
+    canvasWrap.addEventListener("touchstart", startDraw, {passive: false});
+    canvasWrap.addEventListener("touchmove", moveDraw, {passive: false});
+    window.addEventListener("touchend", endDraw);
+
+    // ---------- Arabic Multi-line Text Tool ----------
+    let pendingTextPos = null;
+
+    function openTextInput(pos) {
+        pendingTextPos = pos;
+        const preset = TEXT_PRESETS[currentTextStyle];
+        textOverlay.style.left = pos.x + "px"; textOverlay.style.top = (pos.y - 18) + "px";
+        textOverlay.style.fontFamily = preset.family; textOverlay.style.fontWeight = preset.weight;
+        textOverlay.style.fontSize = (Number(sizeSlider.value) * (preset.sizeMult / 3)) + "px";
+        textOverlay.style.color = currentColor;
+        textOverlay.style.display = "block"; textOverlay.value = ""; textOverlay.focus();
+    }
+
+    function commitText() {
+        if (!pendingTextPos) return;
+        const text = textOverlay.value; textOverlay.style.display = "none";
+        if (text.trim()) {
+            pushUndoSnapshot();
+            const preset = TEXT_PRESETS[currentTextStyle];
+            const fontSize = Number(sizeSlider.value) * preset.sizeMult;
+            
+            ctx.save(); ctx.fillStyle = currentColor;
+            ctx.font = `${preset.weight} ${fontSize}px ${preset.family}`;
+            ctx.direction = "rtl"; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
+
+            text.split('\n').forEach((line, index) => {
+                ctx.fillText(line, pendingTextPos.x, pendingTextPos.y + (index * fontSize * 1.3));
+            });
+            ctx.restore(); saveBoard(true);
+        }
+        pendingTextPos = null;
+    }
+
+    textOverlay.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && e.ctrlKey) { e.preventDefault(); commitText(); } 
+        else if (e.key === "Escape") { textOverlay.style.display = "none"; pendingTextPos = null; }
+    });
+    textOverlay.addEventListener("blur", commitText);
+
+    // ---------- Clear & Download ----------
+    document.getElementById("clear-board-btn").addEventListener("click", () => {
+        if (!confirm("Clear the entire board?")) return;
+        pushUndoSnapshot(); ctx.clearRect(0, 0, canvas.width, canvas.height); saveBoard(false);
+    });
+
+    document.getElementById("save-image-btn").addEventListener("click", () => {
+        const temp = document.createElement("canvas"); temp.width = canvas.width; temp.height = canvas.height;
+        const tctx = temp.getContext("2d");
+        // Draw standard solid background manually for download since CSS gradient isn't captured
+        tctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--parchment');
+        tctx.fillRect(0, 0, temp.width, temp.height);
+        tctx.drawImage(pageCanvas, 0, 0, temp.width, temp.height); tctx.drawImage(canvas, 0, 0, temp.width, temp.height);
+        const link = document.createElement("a"); link.download = "sabora-board.png";
+        link.href = temp.toDataURL("image/png"); link.click(); showToast("Image Downloaded");
+    });
+
+    // ---------- Shortcuts ----------
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement === textOverlay) return;
+        const key = e.key.toLowerCase(); const mod = e.ctrlKey || e.metaKey;
+
+        if (mod && key === "z" && e.shiftKey) { e.preventDefault(); redo(); }
+        else if (mod && key === "z") { e.preventDefault(); undo(); }
+        else if (mod && key === "y") { e.preventDefault(); redo(); }
+        
+        else if (key === "1") document.querySelector('.pen-btn[data-tool="fine"]').click();
+        else if (key === "2") document.querySelector('.pen-btn[data-tool="brush"]').click();
+        else if (key === "3") document.querySelector('.pen-btn[data-tool="marker"]').click();
+        else if (key === "4") document.querySelector('.pen-btn[data-tool="highlighter"]').click();
+        else if (key === "e") document.getElementById("tool-eraser-btn").click();
+        else if (key === "t") document.getElementById("tool-text-btn").click();
+        else if (key === "c") document.querySelector('.shape-btn[data-shape="circle"]').click();
+        else if (key === "b") document.querySelector('.shape-btn[data-shape="box"]').click();
+        else if (key === "l") document.querySelector('.shape-btn[data-shape="line"]').click();
+        else if (key === "p") document.getElementById("laser-btn").click();
+        else if (key === "[" || key === "]") {
+            const step = key === "[" ? -2 : 2;
+            sizeSlider.value = Math.max(Number(sizeSlider.min), Math.min(Number(sizeSlider.max), Number(sizeSlider.value) + step));
+            sizeLabel.textContent = sizeSlider.value;
+        }
+    });
+
+    // Preload Arabic Fonts
+    document.fonts.load("400 40px Amiri"); document.fonts.load("700 40px Amiri");
+</script>
+</body>
+</html>
