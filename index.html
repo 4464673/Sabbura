@@ -3,15 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bidāya & Qalam Board — Islam, Arabic & Calligraphy</title>
-    
-    <!-- Fonts for Qalam Board and Bidaya -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-
+    <title>Bidāya — A Starting Point for Islam & Arabic</title>
     <style>
         :root {
-            /* Bidaya Theme Vars */
             --bg-dark: #11221b;
             --bg-nav: #fdfaf0;
             --accent-gold: #f39c12;
@@ -19,18 +13,6 @@
             --text-light: #f5f5f5;
             --font-sans: 'Arial', sans-serif;
             --font-serif: 'Georgia', serif;
-
-            /* Qalam Board Theme Vars */
-            --ink-black: #2b2620;
-            --parchment: #f4ecd8;
-            --emerald: #0d3b2e;
-            --emerald-deep: #082820;
-            --gold: #c89b3c;
-            --gold-bright: #e0b45a;
-            --font-arabic: 'Amiri', serif;
-            --font-ui: 'Jost', sans-serif;
-            --glass-bg: rgba(8, 40, 32, 0.88);
-            --glass-border: rgba(200, 155, 60, 0.3);
         }
 
         * { box-sizing: border-box; }
@@ -54,10 +36,6 @@
             font-weight: bold;
             flex-wrap: wrap;
             row-gap: 10px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .logo {
@@ -94,15 +72,27 @@
             margin-left: 15px;
         }
 
-        .btn-signin { background-color: #ffffff; color: #333; }
-        .btn-signout { background-color: #a93226; color: #ffffff; border: none; }
-        .btn-signin:hover, .btn-signout:hover { opacity: 0.9; }
+        .btn-signin {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .btn-signout {
+            background-color: #a93226;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-signin:hover, .btn-signout:hover {
+            opacity: 0.9;
+        }
 
         #auth-error {
             display: none;
             background-color: #a93226;
             color: #fff;
             font-size: 13px;
+            font-weight: normal;
             padding: 8px 14px;
             border-radius: 4px;
             margin-top: 8px;
@@ -150,7 +140,11 @@
             margin-bottom: 40px;
         }
 
-        .hero-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
         .btn-primary {
             background-color: var(--text-gold);
@@ -198,18 +192,21 @@
 
         /* --- WHERE TO START --- */
         .start-section { background-color: #0e1c16; }
+
         .start-steps {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
+
         .start-step {
             background-color: #1a332a;
             border: 1px solid #2e5a48;
             border-radius: 8px;
             padding: 25px;
         }
+
         .start-step .step-num {
             display: inline-block;
             background-color: var(--text-gold);
@@ -222,11 +219,23 @@
             line-height: 28px;
             margin-bottom: 12px;
         }
-        .start-step h3 { margin: 0 0 8px 0; color: var(--text-gold); font-family: var(--font-serif); }
-        .start-step p { color: #dcdcdc; font-size: 14px; line-height: 1.5; margin: 0; }
+
+        .start-step h3 {
+            margin: 0 0 8px 0;
+            color: var(--text-gold);
+            font-family: var(--font-serif);
+        }
+
+        .start-step p {
+            color: #dcdcdc;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
 
         /* --- CLASS LIBRARY SECTION --- */
         .library-section { background-color: #152b22; }
+
         .welcome-box {
             background-color: #1a332a;
             border: 1px solid #2e5a48;
@@ -235,20 +244,38 @@
             text-align: center;
             margin-bottom: 40px;
         }
-        .welcome-box h1 { color: var(--text-gold); font-family: var(--font-serif); margin-top: 0; }
+
+        .welcome-box h1 {
+            color: var(--text-gold);
+            font-family: var(--font-serif);
+            margin-top: 0;
+        }
+
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
+
         .card {
             background-color: #1a332a;
             border: 1px solid #2e5a48;
             border-radius: 8px;
             padding: 25px;
         }
-        .card h3 { color: var(--text-gold); margin-top: 0; font-family: var(--font-serif); }
-        .card p { color: #dcdcdc; font-size: 14px; line-height: 1.5; }
+
+        .card h3 {
+            color: var(--text-gold);
+            margin-top: 0;
+            font-family: var(--font-serif);
+        }
+
+        .card p {
+            color: #dcdcdc;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
         .card-btn {
             display: inline-block;
             margin-top: 15px;
@@ -264,7 +291,14 @@
             font-family: inherit;
         }
 
-        /* PORTAL BOXES */
+        .card-note {
+            display: none;
+            font-size: 12px;
+            color: var(--text-gold);
+            margin-top: 8px;
+        }
+
+        /* --- CLASS PORTAL (role select / create / join / upload) --- */
         .portal-box {
             max-width: 480px;
             margin: 0 auto 40px auto;
@@ -274,7 +308,20 @@
             padding: 30px;
             text-align: center;
         }
-        .role-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+
+        .portal-box h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
         .role-btn {
             background-color: var(--accent-gold);
             color: #11221b;
@@ -284,233 +331,67 @@
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
+            font-family: inherit;
         }
+
+        .role-btn.secondary {
+            background-color: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--text-gold);
+        }
+
         .portal-input {
             display: block;
             width: 100%;
+            box-sizing: border-box;
             padding: 10px 12px;
             margin: 10px 0;
             border-radius: 4px;
             border: 1px solid #2c4636;
             background-color: #0e1c16;
             color: var(--text-light);
+            font-family: inherit;
             font-size: 14px;
         }
-        .portal-error { display: none; color: #ff8080; font-size: 13px; margin-top: 10px; }
 
-        /* --- EMBEDDED QALAM BOARD SECTION --- */
-        .whiteboard-section {
-            background-color: #0e1c16;
-            padding: 60px 20px;
-        }
-
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 720px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid var(--glass-border);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.1) 100%), var(--parchment);
-        }
-
-        .floating-panel {
-            position: absolute;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
-            z-index: 100;
-        }
-
-        .top-left-panel {
-            top: 15px;
-            left: 15px;
-            border-radius: 12px;
-            padding: 10px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 6px;
-        }
-        .brand .title { font-family: var(--font-arabic); font-size: 22px; color: var(--gold-bright); }
-        .brand .subtitle { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #9db8ab; }
-
-        .top-right-panel {
-            top: 15px;
-            right: 15px;
-            border-radius: 12px;
-            padding: 8px;
-            display: flex;
-            gap: 6px;
-        }
-
-        .bottom-dock {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 20px;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            max-width: 95%;
-            overflow-x: auto;
-        }
-
-        .dock-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-right: 14px;
-            border-right: 1px solid rgba(200, 155, 60, 0.2);
-            position: relative;
-        }
-        .dock-section:last-child { border-right: none; padding-right: 0; }
-        .dock-label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--gold-bright);
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-        }
-
-        .tool-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background: rgba(244,236,216,0.05);
-            border: 1px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--parchment);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: var(--font-ui);
-            font-size: 10px;
-            gap: 2px;
-        }
-
-        .tool-btn:hover { background: rgba(200,155,60,0.18); }
-        .tool-btn.active {
-            background: var(--gold);
-            color: var(--emerald-deep);
-            border-color: var(--gold-bright);
-            font-weight: bold;
-        }
-
-        .tool-btn.danger { color: #e57373; }
-        .tool-btn.danger:hover { background: rgba(229, 115, 115, 0.2); color: #ef9a9a; }
-        .action-btn { width: auto; padding: 0 12px; height: 36px; font-size: 12px; }
-        .small-btn { width: auto; padding: 0 8px; height: 28px; font-size: 11px; border-radius: 6px; border: 1px solid var(--glass-border); }
-
-        .pen-preview { width: 20px; height: 3px; border-radius: 2px; background: currentColor; }
-        .pen-preview.fine { height: 2px; }
-        .pen-preview.brush { height: 5px; }
-        .pen-preview.marker { height: 4px; }
-        .pen-preview.highlighter { height: 7px; opacity: 0.5; }
-
-        .ink-swatch {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid rgba(244,236,216,0.3);
-            transition: transform 0.2s;
-        }
-        .ink-swatch:hover { transform: scale(1.15); }
-        .ink-swatch.active { border-color: #fff; box-shadow: 0 0 0 2px var(--gold-bright); transform: scale(1.1); }
-        .color-picker-wrap { position: relative; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); }
-        #custom-color { position: absolute; top: -10px; left: -10px; width: 45px; height: 45px; cursor: pointer; border: none; background: none; }
-
-        .size-slider-wrap { display: flex; align-items: center; gap: 6px; }
-        input[type="range"] { width: 70px; accent-color: var(--gold); cursor: pointer; }
-
-        #board-canvas, #page-canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; touch-action: none; }
-        #page-canvas { z-index: 1; pointer-events: none; }
-        #board-canvas { z-index: 2; cursor: crosshair; }
-
-        #brush-cursor {
-            position: absolute;
-            pointer-events: none;
-            border: 1.5px solid var(--gold);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
+        .portal-error {
             display: none;
-            z-index: 20;
+            color: #ff8080;
+            font-size: 13px;
+            margin-top: 10px;
         }
 
-        .laser-dot {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #fff 0%, #ff4433 45%, #d81f0f 100%);
-            box-shadow: 0 0 8px 2px rgba(255,50,30,0.75);
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            animation: laserFade 0.5s ease-out forwards;
-            z-index: 10;
-        }
-        @keyframes laserFade { 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); } }
-
-        #text-input-overlay {
-            position: absolute;
-            display: none;
-            direction: rtl;
-            border: 2px dashed var(--gold);
-            background: rgba(244,236,216,0.9);
-            color: var(--ink-black);
-            padding: 8px;
-            outline: none;
-            min-width: 180px;
-            border-radius: 6px;
-            resize: both;
-            z-index: 30;
+        .class-header-bar {
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        #toast {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            background: var(--gold);
-            color: var(--emerald-deep);
-            font-weight: bold;
-            padding: 8px 20px;
-            border-radius: 20px;
+        .leave-class-btn {
+            background: none;
+            border: 1px solid #446;
+            color: #bbb;
+            padding: 6px 14px;
+            border-radius: 4px;
             font-size: 12px;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s;
-            z-index: 200;
+            cursor: pointer;
+            font-family: inherit;
         }
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         /* --- ALPHABET SECTION --- */
         .alphabet-section { background-color: #0e1c16; }
+
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
             gap: 14px;
             margin-top: 20px;
         }
+
         .letter-card {
             background-color: #1a332a;
             border: 1px solid #2e5a48;
@@ -518,69 +399,111 @@
             padding: 16px 10px;
             text-align: center;
         }
-        .letter-card .letter-ar { font-size: 32px; color: var(--text-gold); margin-bottom: 6px; }
-        .letter-card .letter-name { font-size: 13px; font-weight: bold; }
-        .letter-card .letter-translit { font-size: 12px; color: #999; }
+
+        .letter-card .letter-ar {
+            font-size: 32px;
+            color: var(--text-gold);
+            margin-bottom: 6px;
+        }
+
+        .letter-card .letter-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .letter-card .letter-translit {
+            font-size: 12px;
+            color: #999;
+        }
 
         /* --- DID YOU KNOW SECTION --- */
         .facts-section { background-color: #152b22; }
+
         .facts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
+
         .fact-card {
             background-color: #1a332a;
             border-left: 3px solid var(--text-gold);
             border-radius: 4px;
             padding: 20px;
         }
-        .fact-card p { color: #dcdcdc; font-size: 14px; line-height: 1.6; margin: 0; }
 
+        .fact-card p {
+            color: #dcdcdc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Decorative Stars */
+        .star {
+            position: absolute;
+            color: rgba(230, 185, 91, 0.1);
+            font-size: 200px;
+            z-index: -1;
+            user-select: none;
+        }
+        .star-1 { top: 20px; right: 10%; transform: rotate(15deg); }
+        .star-2 { bottom: -50px; left: 10%; transform: rotate(-15deg); font-size: 150px; }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 700px) {
             nav { padding: 15px 20px; }
+            .nav-links { gap: 14px; }
             .hero { padding: 50px 20px; }
             .hero-title { font-size: 34px; }
-            .canvas-container { height: 550px; }
-            .dock-label { display: none; }
+            .hero-arabic {
+                position: static;
+                display: block;
+                margin: 10px 0 20px 0;
+                font-size: 28px;
+            }
+            section { padding: 40px 20px; }
+            .welcome-box { padding: 25px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION BAR -->
     <nav>
-        <div class="logo">Bidāya <span style="font-size: 16px; color: #888;">| بداية</span></div>
+        <div class="logo">Bidāya <span style="font-size: 16px;">بداية</span></div>
         <div class="nav-links">
             <a href="#start">Where to Start</a>
             <a href="#library">Class Library</a>
-            <a href="#whiteboard">Qalam Board</a>
             <a href="#alphabet">Alphabet</a>
             <a href="#facts">Did You Know</a>
             <div id="nav-auth-container"></div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
     <header class="hero">
+        <div class="star star-1">☆</div>
+        <div class="star star-2">☆</div>
+
         <div class="hero-subtitle">A GENTLE STARTING POINT</div>
         <h1 class="hero-title">Begin your journey into Islam & the Arabic language</h1>
         <div class="hero-arabic">أهلاً وسهلاً بك</div>
+
         <p class="hero-desc">
-            Bidāya (بداية) means "beginning." This is a unified workspace with classes, reading materials, interactive calligraphy boards, and foundations built for your learning path.
+            Bidāya (بداية) means "beginning." This is a small, honest library of books, facts, and first steps — built for people who are just starting out, whether that means learning about Islam, learning Arabic, or both.
         </p>
+
         <div class="hero-buttons">
             <a href="#start" class="btn-primary">Find where to start</a>
             <a href="#library" class="btn-secondary">Browse the library</a>
         </div>
     </header>
 
-    <!-- WHERE TO START SECTION -->
     <section class="start-section" id="start">
         <div class="container">
             <h2>Where to Start</h2>
-            <p class="section-intro">New here? These are four simple steps to get started right away.</p>
+            <p class="section-intro">New here? These are the first four things worth doing, in order.</p>
             <div class="start-steps">
                 <div class="start-step">
                     <span class="step-num">1</span>
@@ -590,25 +513,25 @@
                 <div class="start-step">
                     <span class="step-num">2</span>
                     <h3>Learn the alphabet</h3>
-                    <p>Arabic reading starts with 28 letters. Spend a week on shapes and sounds before full words.</p>
+                    <p>Arabic reading starts with the 28 letters. Spend a week on shapes and sounds before words.</p>
                 </div>
                 <div class="start-step">
                     <span class="step-num">3</span>
                     <h3>Join a class</h3>
-                    <p>Check the Class Library below for current syllabi, uploads, and live lesson hubs.</p>
+                    <p>Check the Class Library below for the current syllabus, readings, and recordings.</p>
                 </div>
                 <div class="start-step">
                     <span class="step-num">4</span>
-                    <h3>Practice Calligraphy</h3>
-                    <p>Use the embedded Qalam Board to practice drawing and writing Arabic script hands-on.</p>
+                    <h3>Find a community</h3>
+                    <p>A local mosque or study circle makes the learning stick far better than studying alone.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CLASS LIBRARY SECTION (Firebase Auth & Firestore) -->
     <section class="library-section" id="library">
         <div class="container">
+
             <div class="welcome-box">
                 <h1 id="welcome-title">Loading...</h1>
                 <p id="welcome-subtitle" style="color: #bbb;">Bidāya Class Library Hub</p>
@@ -616,7 +539,7 @@
                 <div id="auth-error"></div>
             </div>
 
-            <!-- Role Selector -->
+            <!-- Step 1: shown once signed in — pick teacher or student -->
             <div id="role-select" class="portal-box" style="display: none;">
                 <h2>Are you a teacher or a student?</h2>
                 <div class="role-buttons">
@@ -625,22 +548,16 @@
                 </div>
             </div>
 
-            <!-- Teacher: Create Class -->
+            <!-- Teacher: create a class -->
             <div id="teacher-create" class="portal-box" style="display: none;">
-                <h2>Manage Your Classes</h2>
-                <div id="teacher-existing-classes" style="margin-bottom: 20px; text-align: left; display: none;">
-                    <h3 style="color: var(--text-gold); font-size: 14px; margin-bottom: 10px;">Your Created Classes:</h3>
-                    <div id="teacher-class-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    <hr style="border: 0; border-top: 1px solid #2c4636; margin: 20px 0;">
-                </div>
-                <h3 style="color: var(--text-gold); font-size: 14px; margin-top: 0; text-align: center;">Create a New Class</h3>
+                <h2>Create your class</h2>
                 <input type="text" id="create-class-name" placeholder="Class name" class="portal-input">
                 <input type="password" id="create-class-password" placeholder="Set a password" class="portal-input">
                 <button id="create-class-btn" class="card-btn">Create Class</button>
                 <div id="create-class-error" class="portal-error"></div>
             </div>
 
-            <!-- Student: Join Class -->
+            <!-- Student: join a class -->
             <div id="student-join" class="portal-box" style="display: none;">
                 <h2>Join a class</h2>
                 <input type="text" id="join-class-name" placeholder="Class name" class="portal-input">
@@ -649,7 +566,7 @@
                 <div id="join-class-error" class="portal-error"></div>
             </div>
 
-            <!-- Teacher: Upload Material -->
+            <!-- Teacher-only: add a material -->
             <div id="teacher-upload" class="portal-box" style="display: none;">
                 <h2>Add class material</h2>
                 <input type="text" id="material-title" placeholder="Title (e.g. Week 2 Readings)" class="portal-input">
@@ -658,136 +575,47 @@
                 <div id="material-error" class="portal-error"></div>
             </div>
 
-            <!-- Active Class Materials -->
             <div id="class-materials-section" style="display: none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h2 id="materials-heading" style="margin:0;">Available Class Materials</h2>
                     <button id="switch-class-btn" class="card-btn" style="background:transparent; border:1px solid var(--accent-gold); color:var(--text-gold);">Switch Class</button>
                 </div>
                 <p class="section-intro">Select a resource below to view or download.</p>
-                <div class="cards-grid" id="materials-grid"></div>
+                <div class="cards-grid" id="materials-grid">
+                    <!-- Filled in by JS from Firestore -->
+                </div>
                 <p id="no-materials-msg" style="display: none; color: #bbb;">No materials uploaded yet. Check back soon.</p>
             </div>
         </div>
     </section>
 
-    <!-- QALAM BOARD WHITEBOARD SECTION -->
-    <section class="whiteboard-section" id="whiteboard">
-        <div class="container">
-            <h2>Qalam Board — Interactive Canvas</h2>
-            <p class="section-intro">Use this embedded virtual whiteboard for calligraphy practice, notes, or classroom demonstrations.</p>
-
-            <div class="canvas-container" id="canvas-wrap">
-                <canvas id="page-canvas"></canvas>
-                <canvas id="board-canvas"></canvas>
-                <div id="brush-cursor"></div>
-                <textarea id="text-input-overlay" placeholder="اكتب هنا... (Ctrl+Enter للحفظ)"></textarea>
-
-                <div id="toast"></div>
-
-                <!-- Top Left Panel -->
-                <div class="floating-panel top-left-panel">
-                    <div class="brand">
-                        <span class="title">سبورة</span>
-                        <span class="subtitle">Qalam Board</span>
-                    </div>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="tool-btn small-btn page-style-btn active" data-style="plain">Plain</button>
-                        <button class="tool-btn small-btn page-style-btn" data-style="lined">Lined</button>
-                        <button class="tool-btn small-btn page-style-btn" data-style="grid">Grid</button>
-                        <button class="tool-btn small-btn page-style-btn" data-style="dotted">Dots</button>
-                    </div>
-                </div>
-
-                <!-- Top Right Panel -->
-                <div class="floating-panel top-right-panel">
-                    <button class="tool-btn action-btn" id="tool-text-btn" title="Text (T)">✎ Text</button>
-                    <button class="tool-btn action-btn" id="tool-eraser-btn" title="Eraser (E)">🧽 Eraser</button>
-                    <button class="tool-btn action-btn" id="undo-btn" title="Undo (Ctrl+Z)">↺</button>
-                    <button class="tool-btn action-btn" id="redo-btn" title="Redo (Ctrl+Y)">↻</button>
-                    <button class="tool-btn action-btn" id="save-image-btn" title="Download Image">⬇</button>
-                    <button class="tool-btn action-btn danger" id="clear-board-btn" title="Clear Canvas">✕</button>
-                </div>
-
-                <!-- Bottom Dock -->
-                <div class="floating-panel bottom-dock">
-                    <div class="dock-section">
-                        <div class="dock-label">Pen</div>
-                        <button class="tool-btn pen-btn active" data-tool="fine" title="Fine (1)">
-                            <span class="pen-preview fine"></span> Fine
-                        </button>
-                        <button class="tool-btn pen-btn" data-tool="brush" title="Brush (2)">
-                            <span class="pen-preview brush"></span> Brush
-                        </button>
-                        <button class="tool-btn pen-btn" data-tool="marker" title="Marker (3)">
-                            <span class="pen-preview marker"></span> Marker
-                        </button>
-                        <button class="tool-btn pen-btn" data-tool="highlighter" title="Highlight (4)">
-                            <span class="pen-preview highlighter"></span> High
-                        </button>
-                    </div>
-
-                    <div class="dock-section">
-                        <div class="dock-label">Shapes</div>
-                        <button class="tool-btn shape-btn" data-shape="circle" title="Circle (C)"><span style="font-size:16px;">◯</span></button>
-                        <button class="tool-btn shape-btn" data-shape="box" title="Box (B)"><span style="font-size:14px;">▭</span></button>
-                        <button class="tool-btn shape-btn" data-shape="line" title="Line (L)"><span style="font-size:14px;">╱</span></button>
-                        <button class="tool-btn shape-btn" id="laser-btn" title="Laser (P)"><span style="font-size:14px; color:#e63c32;">●</span></button>
-                    </div>
-
-                    <div class="dock-section">
-                        <div class="dock-label">Ink</div>
-                        <div class="ink-swatch active" style="background:#2b2620" data-color="#2b2620"></div>
-                        <div class="ink-swatch" style="background:#7a2e2e" data-color="#7a2e2e"></div>
-                        <div class="ink-swatch" style="background:#0d3b2e" data-color="#0d3b2e"></div>
-                        <div class="ink-swatch" style="background:#2d4a6b" data-color="#2d4a6b"></div>
-                        <div class="ink-swatch" style="background:#c89b3c" data-color="#c89b3c"></div>
-                        <div class="color-picker-wrap" title="Custom Color">
-                            <input type="color" id="custom-color" value="#2b2620">
-                        </div>
-                    </div>
-
-                    <div class="dock-section">
-                        <div class="dock-label">Size</div>
-                        <div class="size-slider-wrap">
-                            <input type="range" id="pen-size" min="2" max="32" value="6">
-                            <span id="size-label" style="font-size:12px; color:var(--gold);">6</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ARABIC ALPHABET SECTION -->
     <section class="alphabet-section" id="alphabet">
         <div class="container">
             <h2>The Arabic Alphabet</h2>
-            <p class="section-intro">All 28 letters in standard order. Read right to left.</p>
+            <p class="section-intro">All 28 letters, in order. Arabic is written and read right to left.</p>
             <div class="alphabet-grid" id="alphabet-grid"></div>
         </div>
     </section>
 
-    <!-- DID YOU KNOW SECTION -->
     <section class="facts-section" id="facts">
         <div class="container">
             <h2>Did You Know?</h2>
-            <p class="section-intro">Interesting linguistic facts to expand your knowledge.</p>
+            <p class="section-intro">A few small facts to get you curious.</p>
             <div class="facts-grid">
                 <div class="fact-card"><p>Arabic is written right to left, but numbers within Arabic text are written left to right.</p></div>
-                <div class="fact-card"><p>Classical Arabic has no capital letters — letter shapes adapt based on their position in a word.</p></div>
-                <div class="fact-card"><p>Many English words — like "algebra," "coffee," and "cotton" — originate directly from Arabic.</p></div>
-                <div class="fact-card"><p>The Arabic script is used for multiple world languages including Persian, Urdu, and historical Ottoman Turkish.</p></div>
+                <div class="fact-card"><p>Classical Arabic has no capital letters — a letter's shape instead changes depending on where it falls in a word.</p></div>
+                <div class="fact-card"><p>Many English words — like "algebra," "coffee," and "cotton" — come from Arabic.</p></div>
+                <div class="fact-card"><p>The Arabic script is also used to write other languages, including Persian, Urdu, and historically Ottoman Turkish.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- FIREBASE AUTH & FIRESTORE INTEGRATION MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, orderBy, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Config integrated directly from your project
         const firebaseConfig = {
             apiKey: "AIzaSyCzRmE2cu2voK-2Dm7GHEuiKNyN22Gzp0k",
             authDomain: "bidayaapp-49574.firebaseapp.com",
@@ -804,60 +632,141 @@
         const welcomeSubtitle = document.getElementById("welcome-subtitle");
         const authError = document.getElementById("auth-error");
 
-        function showAuthError(msg) { authError.textContent = msg; authError.style.display = "block"; }
-        function clearAuthError() { authError.style.display = "none"; authError.textContent = ""; }
+        function showAuthError(message) {
+            authError.textContent = message;
+            authError.style.display = "block";
+        }
 
+        function clearAuthError() {
+            authError.style.display = "none";
+            authError.textContent = "";
+        }
+
+        // BUG FIX #1: opening this file directly (file:///...) breaks Firebase Auth
+        // completely and silently — no error, it just never loads. Auth only works
+        // when the page is served over http/https (Live Server locally, or the real
+        // GitHub Pages URL once deployed). Catch that case early and say so plainly
+        // instead of leaving the button dead with no explanation.
         if (window.location.protocol === "file:") {
-            welcomeTitle.textContent = "Local file protocol detected";
-            showAuthError("Google Sign-In requires an HTTP/HTTPS address. Please launch with VSCode Live Server.");
+            welcomeTitle.textContent = "Can't sign in from a local file";
+            welcomeSubtitle.textContent = "";
+            showAuthError("This page was opened directly from your computer (file://...). Google Sign-In needs a real web address to work — open this through Live Server in VSCode, or visit the live GitHub Pages link instead of double-clicking the file.");
+            navAuthContainer.innerHTML = "";
+            centerAuthContainer.innerHTML = "";
         } else {
             initAuth();
         }
 
         function initAuth() {
             let app, auth, provider, db;
+
+            // BUG FIX #2: initializeApp/getAuth can throw (bad config, network
+            // blocked, etc.) and previously nothing caught that — the button and
+            // "Loading..." text just sat there dead with zero explanation.
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 provider = new GoogleAuthProvider();
                 db = getFirestore(app);
-            } catch (e) {
-                welcomeTitle.textContent = "Sign-in Unavailable";
-                showAuthError("Firebase error. Check internet connection.");
+            } catch (error) {
+                console.error("Firebase failed to initialize:", error);
+                welcomeTitle.textContent = "Sign-in is unavailable";
+                showAuthError("Something went wrong loading Google Sign-In. Please refresh the page.");
                 return;
             }
 
+            // BUG FIX #3: if onAuthStateChanged never fires (ad blocker, blocked
+            // third-party storage/cookies in Safari or Brave, browser extension,
+            // etc.) the page was stuck on "Loading..." forever with no feedback.
+            const stuckTimer = setTimeout(() => {
+                if (welcomeTitle.textContent === "Loading...") {
+                    welcomeTitle.textContent = "Sign-in is taking too long";
+                    showAuthError("If this doesn't resolve, your browser may be blocking third-party cookies/storage. Try a different browser or disable strict tracking protection for this site.");
+                }
+            }, 6000);
+
+            // BUG FIX #5: switched from signInWithRedirect to signInWithPopup.
+            // Redirect-based sign-in depends on the browser preserving storage
+            // across a full navigation away to Google and back — modern Chrome
+            // and Firefox both increasingly block that for privacy reasons, and
+            // when they do, Firebase doesn't throw an error, it just silently
+            // comes back signed-out. A popup keeps everything in a small window
+            // and talks back via postMessage instead, so it isn't affected by
+            // that storage restriction at all. This is Firebase's own
+            // recommended fix for exactly this "no error, just doesn't work"
+            // symptom.
             function handleSignIn() {
                 clearAuthError();
-                signInWithPopup(auth, provider).catch(err => showAuthError("Sign-in error: " + err.message));
+                signInWithPopup(auth, provider).catch((error) => {
+                    console.error("signInWithPopup failed:", error);
+                    if (error.code === "auth/unauthorized-domain") {
+                        showAuthError("This website's domain isn't authorized for sign-in yet. In the Firebase console, go to Authentication → Settings → Authorized domains, and add this site's domain.");
+                    } else if (error.code === "auth/popup-blocked") {
+                        showAuthError("Your browser blocked the sign-in popup. Allow popups for this site and try again.");
+                    } else if (error.code === "auth/popup-closed-by-user" || error.code === "auth/cancelled-popup-request") {
+                        // User closed the popup themselves — not a real error, no need to show one.
+                    } else {
+                        showAuthError("Sign-in didn't go through (" + error.code + "). Please try again.");
+                    }
+                });
             }
 
             function handleSignOut() {
-                forgetActiveClass();
-                signOut(auth);
+                signOut(auth).catch((error) => {
+                    console.error("Sign out failed:", error);
+                    showAuthError("Sign-out didn't go through. Please try again.");
+                });
             }
 
-            onAuthStateChanged(auth, user => {
-                navAuthContainer.innerHTML = ""; centerAuthContainer.innerHTML = "";
-                const navBtn = document.createElement("button"); navBtn.className = "auth-btn";
-                const centerBtn = document.createElement("button"); centerBtn.className = "auth-btn";
+            onAuthStateChanged(auth, (user) => {
+                clearTimeout(stuckTimer);
+                navAuthContainer.innerHTML = "";
+                centerAuthContainer.innerHTML = "";
+
+                const navBtn = document.createElement("button");
+                navBtn.className = "auth-btn";
+
+                const centerBtn = document.createElement("button");
+                centerBtn.className = "auth-btn";
+                centerBtn.style.padding = "10px 24px";
+                centerBtn.style.fontSize = "16px";
 
                 if (user) {
                     welcomeTitle.textContent = `Welcome, ${user.displayName || "Student"}!`;
-                    welcomeSubtitle.textContent = "Signed in with Google.";
-                    navBtn.textContent = "Sign Out"; navBtn.className += " btn-signout"; navBtn.onclick = handleSignOut;
-                    centerBtn.textContent = "Sign Out"; centerBtn.className += " btn-signout"; centerBtn.onclick = handleSignOut;
+                    welcomeSubtitle.textContent = "Successfully logged in with Google.";
+
+                    navBtn.textContent = "Sign Out";
+                    navBtn.classList.add("btn-signout");
+                    navBtn.onclick = handleSignOut;
+
+                    centerBtn.textContent = "Sign Out";
+                    centerBtn.classList.add("btn-signout");
+                    centerBtn.onclick = handleSignOut;
+
+                    // Now that they're signed in, either jump back into their last
+                    // class automatically, or show the role picker if there isn't one.
                     tryResumeLastClass();
                 } else {
                     welcomeTitle.textContent = "Sign in to your account";
-                    welcomeSubtitle.textContent = "Access classes, syllabi, and study resources.";
-                    navBtn.textContent = "Sign in with Google"; navBtn.className += " btn-signin"; navBtn.onclick = handleSignIn;
-                    centerBtn.textContent = "Sign in with Google"; centerBtn.className += " btn-signin"; centerBtn.onclick = handleSignIn;
+                    welcomeSubtitle.textContent = "Sign in with your real Google account to access class materials.";
+
+                    navBtn.textContent = "Sign in with Google";
+                    navBtn.classList.add("btn-signin");
+                    navBtn.onclick = handleSignIn;
+
+                    centerBtn.textContent = "Sign in with Google";
+                    centerBtn.classList.add("btn-signin");
+                    centerBtn.onclick = handleSignIn;
+
+                    // Signed out — hide the whole class portal.
                     hideAllPortalBoxes();
                 }
+
                 navAuthContainer.appendChild(navBtn);
                 centerAuthContainer.appendChild(centerBtn);
             });
+
+            // ---------- CLASS PORTAL: role select / create / join / materials ----------
 
             const roleSelectBox = document.getElementById("role-select");
             const teacherCreateBox = document.getElementById("teacher-create");
@@ -869,329 +778,282 @@
             const noMaterialsMsg = document.getElementById("no-materials-msg");
 
             let currentClassId = null;
+            let currentIsTeacher = false;
             let unsubscribeMaterials = null;
+
+            // ---------- remember the last class the user was in, so a sign-out/sign-in
+            // (or just refreshing the page) doesn't dump them back at the role picker ----------
             const LAST_CLASS_KEY = "bidaya_last_class";
 
             function rememberActiveClass(classId, className, isTeacher) {
-                localStorage.setItem(LAST_CLASS_KEY, JSON.stringify({ classId, className, isTeacher }));
+                try {
+                    localStorage.setItem(LAST_CLASS_KEY, JSON.stringify({ classId, className, isTeacher }));
+                } catch (err) {
+                    console.error("Couldn't remember active class:", err);
+                }
             }
-            function forgetActiveClass() { localStorage.removeItem(LAST_CLASS_KEY); }
+
+            function forgetActiveClass() {
+                try {
+                    localStorage.removeItem(LAST_CLASS_KEY);
+                } catch (err) {
+                    console.error("Couldn't clear remembered class:", err);
+                }
+            }
 
             function tryResumeLastClass() {
+                let saved;
                 try {
-                    const saved = JSON.parse(localStorage.getItem(LAST_CLASS_KEY));
-                    if (saved && saved.classId) { enterClass(saved.classId, saved.className, saved.isTeacher); return; }
-                } catch (e) {}
-                showRoleSelect();
+                    const raw = localStorage.getItem(LAST_CLASS_KEY);
+                    if (!raw) { showRoleSelect(); return; }
+                    saved = JSON.parse(raw);
+                } catch (err) {
+                    showRoleSelect();
+                    return;
+                }
+                if (!saved || !saved.classId) { showRoleSelect(); return; }
+                enterClass(saved.classId, saved.className, saved.isTeacher);
             }
 
             function hideAllPortalBoxes() {
-                [roleSelectBox, teacherCreateBox, studentJoinBox, teacherUploadBox, materialsSection].forEach(el => { if (el) el.style.display = "none"; });
-                if (unsubscribeMaterials) { unsubscribeMaterials(); unsubscribeMaterials = null; }
+                [roleSelectBox, teacherCreateBox, studentJoinBox, teacherUploadBox, materialsSection].forEach(el => {
+                    if (el) el.style.display = "none";
+                });
+                if (unsubscribeMaterials) {
+                    unsubscribeMaterials();
+                    unsubscribeMaterials = null;
+                }
                 currentClassId = null;
             }
 
-            function showRoleSelect() { hideAllPortalBoxes(); roleSelectBox.style.display = "block"; }
-
-            async function loadTeacherClasses() {
-                const container = document.getElementById("teacher-existing-classes");
-                const list = document.getElementById("teacher-class-list");
-                if (!container || !list || !auth.currentUser) return;
-                list.innerHTML = "";
-                try {
-                    const q = query(collection(db, "classes"), where("teacherUid", "==", auth.currentUser.uid));
-                    const snap = await getDocs(q);
-                    if (!snap.empty) {
-                        container.style.display = "block";
-                        snap.forEach(docSnap => {
-                            const data = docSnap.data();
-                            const btn = document.createElement("button");
-                            btn.className = "card-btn";
-                            btn.style.width = "100%"; btn.style.textAlign = "left"; btn.style.marginBottom = "6px";
-                            btn.textContent = `▶ Open ${data.className}`;
-                            btn.onclick = () => enterClass(docSnap.id, data.className, true);
-                            list.appendChild(btn);
-                        });
-                    } else container.style.display = "none";
-                } catch (err) { console.error(err); }
+            function showRoleSelect() {
+                hideAllPortalBoxes();
+                roleSelectBox.style.display = "block";
             }
 
-            document.getElementById("role-teacher-btn").onclick = async () => {
-                hideAllPortalBoxes(); teacherCreateBox.style.display = "block"; await loadTeacherClasses();
-            };
-            document.getElementById("role-student-btn").onclick = () => {
-                hideAllPortalBoxes(); studentJoinBox.style.display = "block";
-            };
+            document.getElementById("role-teacher-btn").addEventListener("click", () => {
+                hideAllPortalBoxes();
+                teacherCreateBox.style.display = "block";
+            });
 
-            function slugify(name) { return name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, ""); }
+            document.getElementById("role-student-btn").addEventListener("click", () => {
+                hideAllPortalBoxes();
+                studentJoinBox.style.display = "block";
+            });
 
-            document.getElementById("create-class-btn").onclick = async () => {
-                const name = document.getElementById("create-class-name").value.trim();
-                const pass = document.getElementById("create-class-password").value;
-                const errBox = document.getElementById("create-class-error");
-                errBox.style.display = "none";
-                if (!name || !pass) { errBox.textContent = "Please fill all fields."; errBox.style.display = "block"; return; }
+            // Turns "My Class 1" into a safe Firestore document ID like "my-class-1"
+            function slugifyClassName(name) {
+                return name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+            }
 
-                const cid = slugify(name);
-                const cref = doc(db, "classes", cid);
-                const snap = await getDoc(cref);
-                if (snap.exists()) {
-                    if (snap.data().teacherUid === auth.currentUser.uid) { enterClass(cid, name, true); return; }
-                    errBox.textContent = "Class name already taken."; errBox.style.display = "block"; return;
+            // --- Teacher: create a class ---
+            document.getElementById("create-class-btn").addEventListener("click", async () => {
+                const nameInput = document.getElementById("create-class-name");
+                const passInput = document.getElementById("create-class-password");
+                const errorBox = document.getElementById("create-class-error");
+                errorBox.style.display = "none";
+
+                const className = nameInput.value.trim();
+                const password = passInput.value;
+                const classId = slugifyClassName(className);
+
+                if (!className || !password) {
+                    errorBox.textContent = "Please enter both a class name and a password.";
+                    errorBox.style.display = "block";
+                    return;
                 }
-                await setDoc(cref, { className: name, password: pass, teacherUid: auth.currentUser.uid, createdAt: Date.now() });
-                enterClass(cid, name, true);
-            };
 
-            document.getElementById("join-class-btn").onclick = async () => {
-                const name = document.getElementById("join-class-name").value.trim();
-                const pass = document.getElementById("join-class-password").value;
-                const errBox = document.getElementById("join-class-error");
-                errBox.style.display = "none";
-                const cid = slugify(name);
-                const snap = await getDoc(doc(db, "classes", cid));
-                if (!snap.exists() || snap.data().password !== pass) {
-                    errBox.textContent = "Invalid class name or password."; errBox.style.display = "block"; return;
+                try {
+                    const classRef = doc(db, "classes", classId);
+                    const existing = await getDoc(classRef);
+                    if (existing.exists()) {
+                        errorBox.textContent = "A class with this name already exists. Pick a different name, or join it as a student instead.";
+                        errorBox.style.display = "block";
+                        return;
+                    }
+
+                    await setDoc(classRef, {
+                        className: className,
+                        password: password,
+                        teacherUid: auth.currentUser.uid,
+                        teacherName: auth.currentUser.displayName || "Teacher",
+                        createdAt: Date.now()
+                    });
+
+                    enterClass(classId, className, true);
+                } catch (error) {
+                    console.error("Create class failed:", error);
+                    errorBox.textContent = "Couldn't create the class. Make sure Firestore is enabled in your Firebase project.";
+                    errorBox.style.display = "block";
                 }
-                enterClass(cid, snap.data().className, false);
-            };
+            });
 
-            function enterClass(cid, cname, isTeacher) {
-                hideAllPortalBoxes(); currentClassId = cid; rememberActiveClass(cid, cname, isTeacher);
-                materialsHeading.textContent = `Materials — ${cname}`;
+            // --- Student: join a class ---
+            document.getElementById("join-class-btn").addEventListener("click", async () => {
+                const nameInput = document.getElementById("join-class-name");
+                const passInput = document.getElementById("join-class-password");
+                const errorBox = document.getElementById("join-class-error");
+                errorBox.style.display = "none";
+
+                const className = nameInput.value.trim();
+                const password = passInput.value;
+                const classId = slugifyClassName(className);
+
+                if (!className || !password) {
+                    errorBox.textContent = "Please enter both the class name and password.";
+                    errorBox.style.display = "block";
+                    return;
+                }
+
+                try {
+                    const classRef = doc(db, "classes", classId);
+                    const snap = await getDoc(classRef);
+
+                    if (!snap.exists()) {
+                        errorBox.textContent = "No class found with that name. Double check with your teacher.";
+                        errorBox.style.display = "block";
+                        return;
+                    }
+
+                    const classData = snap.data();
+
+                    if (classData.password !== password) {
+                        errorBox.textContent = "Wrong password. Double check with your teacher.";
+                        errorBox.style.display = "block";
+                        return;
+                    }
+
+                    // FIX: Compare the user's UID against the teacherUid saved in Firestore
+                    const isActuallyTeacher = (classData.teacherUid === auth.currentUser.uid);
+
+                    enterClass(classId, classData.className, isActuallyTeacher);
+                } catch (error) {
+                    console.error("Join class failed:", error);
+                    errorBox.textContent = "Couldn't join the class. Make sure Firestore is enabled in your Firebase project.";
+                    errorBox.style.display = "block";
+                }
+            });
+
+            // --- Shared: enter a class as either teacher or student ---
+            function enterClass(classId, className, isTeacher) {
+                hideAllPortalBoxes();
+                currentClassId = classId;
+                currentIsTeacher = isTeacher;
+                rememberActiveClass(classId, className, isTeacher);
+
+                materialsHeading.textContent = `Available Class Materials — ${className}`;
                 materialsSection.style.display = "block";
-                if (isTeacher) teacherUploadBox.style.display = "block";
+                if (isTeacher) {
+                    teacherUploadBox.style.display = "block";
+                }
 
-                const q = query(collection(db, "classes", cid, "materials"), orderBy("uploadedAt", "desc"));
-                unsubscribeMaterials = onSnapshot(q, snap => {
+                const materialsRef = collection(db, "classes", classId, "materials");
+                const materialsQuery = query(materialsRef, orderBy("uploadedAt", "desc"));
+
+                unsubscribeMaterials = onSnapshot(materialsQuery, (snapshot) => {
                     materialsGrid.innerHTML = "";
-                    noMaterialsMsg.style.display = snap.empty ? "block" : "none";
-                    snap.forEach(d => {
-                        const item = d.data();
-                        const card = document.createElement("div"); card.className = "card";
-                        card.innerHTML = `<h3>${escapeHtml(item.title)}</h3><p>Uploaded by ${escapeHtml(item.uploadedByName)}</p><a href="${escapeHtml(item.link)}" target="_blank" class="card-btn">Open Resource</a>`;
+                    if (snapshot.empty) {
+                        noMaterialsMsg.style.display = "block";
+                        return;
+                    }
+                    noMaterialsMsg.style.display = "none";
+
+                    snapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        const card = document.createElement("div");
+                        card.className = "card";
+                        card.innerHTML = `
+                            <h3>${escapeHtml(data.title)}</h3>
+                            <p>Uploaded by ${escapeHtml(data.uploadedByName || "Teacher")}</p>
+                            <a href="${escapeHtml(data.link)}" target="_blank" rel="noopener" class="card-btn">Open / Download</a>
+                        `;
                         materialsGrid.appendChild(card);
                     });
+                }, (error) => {
+                    console.error("Loading materials failed:", error);
                 });
             }
 
-            document.getElementById("switch-class-btn").onclick = () => { forgetActiveClass(); showRoleSelect(); };
-
-            document.getElementById("add-material-btn").onclick = async () => {
-                const title = document.getElementById("material-title").value.trim();
-                const link = document.getElementById("material-link").value.trim();
-                if (!title || !link || !currentClassId) return;
-                await addDoc(collection(db, "classes", currentClassId, "materials"), { title, link, uploadedByName: auth.currentUser.displayName || "Teacher", uploadedAt: Date.now() });
-                document.getElementById("material-title").value = ""; document.getElementById("material-link").value = "";
-            };
-
-            function escapeHtml(str) { const d = document.createElement("div"); d.textContent = str; return d.innerHTML; }
-        }
-    </script>
-
-    <!-- QALAM BOARD CANVAS ENGINE SCRIPT -->
-    <script>
-        const canvasWrap = document.getElementById("canvas-wrap");
-        const canvas = document.getElementById("board-canvas");
-        const ctx = canvas.getContext("2d");
-        const pageCanvas = document.getElementById("page-canvas");
-        const pageCtx = pageCanvas.getContext("2d");
-        const textOverlay = document.getElementById("text-input-overlay");
-        const brushCursor = document.getElementById("brush-cursor");
-        const sizeSlider = document.getElementById("pen-size");
-        const sizeLabel = document.getElementById("size-label");
-
-        let currentPenTool = "fine";
-        let currentColor = "#2b2620";
-        let currentPageStyle = "plain";
-        let usingTextTool = false, usingEraser = false, usingShape = false, currentShape = "circle", usingLaser = false;
-
-        const PEN_PRESETS = {
-            fine: { sizeMultiplier: 0.6, opacity: 1, composite: "source-over" },
-            brush: { sizeMultiplier: 1.4, opacity: 0.92, composite: "source-over" },
-            marker: { sizeMultiplier: 1.8, opacity: 1, composite: "source-over" },
-            highlighter: { sizeMultiplier: 3.2, opacity: 0.35, composite: "multiply" }
-        };
-
-        function showToast(msg) {
-            const toast = document.getElementById("toast");
-            toast.textContent = msg; toast.classList.add("show");
-            setTimeout(() => toast.classList.remove("show"), 2000);
-        }
-
-        let undoStack = [], redoStack = [];
-        function pushUndoSnapshot() {
-            if (undoStack.length > 25) undoStack.shift();
-            undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-            redoStack = [];
-        }
-
-        document.getElementById("undo-btn").onclick = () => {
-            if (!undoStack.length) return showToast("Nothing to undo");
-            redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-            ctx.putImageData(undoStack.pop(), 0, 0);
-        };
-        document.getElementById("redo-btn").onclick = () => {
-            if (!redoStack.length) return showToast("Nothing to redo");
-            undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-            ctx.putImageData(redoStack.pop(), 0, 0);
-        };
-
-        function drawPageStyle() {
-            const w = pageCanvas.clientWidth, h = pageCanvas.clientHeight;
-            pageCtx.clearRect(0, 0, w, h);
-            pageCtx.strokeStyle = "rgba(43,38,32,0.18)"; pageCtx.fillStyle = "rgba(43,38,32,0.22)"; pageCtx.lineWidth = 1;
-
-            if (currentPageStyle === "lined") {
-                for (let y = 40; y < h; y += 40) { pageCtx.beginPath(); pageCtx.moveTo(0, y); pageCtx.lineTo(w, y); pageCtx.stroke(); }
-            } else if (currentPageStyle === "grid") {
-                for (let y = 32; y < h; y += 32) { pageCtx.beginPath(); pageCtx.moveTo(0, y); pageCtx.lineTo(w, y); pageCtx.stroke(); }
-                for (let x = 32; x < w; x += 32) { pageCtx.beginPath(); pageCtx.moveTo(x, 0); pageCtx.lineTo(x, h); pageCtx.stroke(); }
-            } else if (currentPageStyle === "dotted") {
-                for (let y = 26; y < h; y += 26) {
-                    for (let x = 26; x < w; x += 26) { pageCtx.beginPath(); pageCtx.arc(x, y, 1.4, 0, Math.PI*2); pageCtx.fill(); }
-                }
-            }
-        }
-
-        document.querySelectorAll(".page-style-btn").forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll(".page-style-btn").forEach(b => b.classList.remove("active"));
-                btn.classList.add("active"); currentPageStyle = btn.dataset.style; drawPageStyle();
-            };
-        });
-
-        function resizeCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            [canvas, pageCanvas].forEach(c => {
-                c.width = canvasWrap.clientWidth * dpr;
-                c.height = canvasWrap.clientHeight * dpr;
-                c.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0);
+            document.getElementById("switch-class-btn").addEventListener("click", () => {
+                forgetActiveClass();
+                showRoleSelect();
             });
-            drawPageStyle();
-        }
-        window.addEventListener("resize", resizeCanvas);
-        setTimeout(resizeCanvas, 100);
 
-        function clearAllModes() {
-            usingTextTool = usingEraser = usingShape = usingLaser = false;
-            document.querySelectorAll(".tool-btn").forEach(b => b.classList.remove("active"));
-        }
+            // --- Teacher: add a material (a real link, works immediately) ---
+            document.getElementById("add-material-btn").addEventListener("click", async () => {
+                const titleInput = document.getElementById("material-title");
+                const linkInput = document.getElementById("material-link");
+                const errorBox = document.getElementById("material-error");
+                errorBox.style.display = "none";
 
-        document.querySelectorAll(".pen-btn").forEach(btn => {
-            btn.onclick = () => { clearAllModes(); currentPenTool = btn.dataset.tool; btn.classList.add("active"); };
+                const title = titleInput.value.trim();
+                const link = linkInput.value.trim();
+
+                if (!title || !link) {
+                    errorBox.textContent = "Please enter both a title and a link.";
+                    errorBox.style.display = "block";
+                    return;
+                }
+                if (!currentClassId) {
+                    errorBox.textContent = "No class selected.";
+                    errorBox.style.display = "block";
+                    return;
+                }
+
+                try {
+                    const materialsRef = collection(db, "classes", currentClassId, "materials");
+                    await addDoc(materialsRef, {
+                        title: title,
+                        link: link,
+                        uploadedByName: auth.currentUser.displayName || "Teacher",
+                        uploadedAt: Date.now()
+                    });
+                    titleInput.value = "";
+                    linkInput.value = "";
+                } catch (error) {
+                    console.error("Add material failed:", error);
+                    errorBox.textContent = "Couldn't add this material. Make sure Firestore is enabled in your Firebase project.";
+                    errorBox.style.display = "block";
+                }
+            });
+
+            // Basic escaping so a class name/title/link can't inject HTML into the page.
+            function escapeHtml(str) {
+                const div = document.createElement("div");
+                div.textContent = str;
+                return div.innerHTML;
+            }
+        } // end initAuth()
+
+        // Card buttons: show a "coming soon" note instead of a dead link
+        document.querySelectorAll(".card-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const note = btn.nextElementSibling;
+                if (note && note.classList.contains("card-note")) {
+                    note.style.display = note.style.display === "block" ? "none" : "block";
+                }
+            });
         });
 
-        document.querySelectorAll(".ink-swatch").forEach(sw => {
-            sw.onclick = () => {
-                document.querySelectorAll(".ink-swatch").forEach(s => s.classList.remove("active"));
-                sw.classList.add("active"); currentColor = sw.dataset.color;
-            };
-        });
-
-        sizeSlider.oninput = () => sizeLabel.textContent = sizeSlider.value;
-
-        document.getElementById("tool-eraser-btn").onclick = (e) => { clearAllModes(); usingEraser = true; e.currentTarget.classList.add("active"); };
-        document.getElementById("tool-text-btn").onclick = (e) => { clearAllModes(); usingTextTool = true; e.currentTarget.classList.add("active"); showToast("Click board to type"); };
-        document.getElementById("laser-btn").onclick = (e) => { clearAllModes(); usingLaser = true; e.currentTarget.classList.add("active"); };
-
-        document.querySelectorAll(".shape-btn[data-shape]").forEach(b => {
-            b.onclick = () => { clearAllModes(); usingShape = true; currentShape = b.dataset.shape; b.classList.add("active"); };
-        });
-
-        let drawing = false, lastPos = null, shapeStartPos = null, shapeSnapshot = null;
-
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        }
-
-        function startDraw(e) {
-            if (e.target.closest('.floating-panel')) return;
-            const pos = getPos(e);
-            if (usingTextTool) { openTextInput(pos); return; }
-            if (usingLaser) { spawnLaser(pos); return; }
-
-            pushUndoSnapshot(); drawing = true; lastPos = pos;
-            if (usingShape) shapeSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }
-
-        function moveDraw(e) {
-            if (!drawing && !usingLaser) return;
-            const pos = getPos(e);
-            if (usingLaser && drawing) { spawnLaser(pos); return; }
-
-            if (usingShape) {
-                ctx.putImageData(shapeSnapshot, 0, 0);
-                ctx.strokeStyle = currentColor; ctx.lineWidth = Number(sizeSlider.value);
-                if (currentShape === "box") ctx.strokeRect(lastPos.x, lastPos.y, pos.x - lastPos.x, pos.y - lastPos.y);
-                else if (currentShape === "line") { ctx.beginPath(); ctx.moveTo(lastPos.x, lastPos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }
-                return;
-            }
-
-            ctx.save(); ctx.beginPath();
-            if (usingEraser) {
-                ctx.globalCompositeOperation = "destination-out";
-                ctx.lineWidth = Number(sizeSlider.value) * 2.5;
-            } else {
-                const p = PEN_PRESETS[currentPenTool];
-                ctx.globalCompositeOperation = p.composite; ctx.globalAlpha = p.opacity;
-                ctx.strokeStyle = currentColor; ctx.lineWidth = Number(sizeSlider.value) * p.sizeMultiplier;
-            }
-            ctx.lineCap = "round"; ctx.moveTo(lastPos.x, lastPos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.restore();
-            lastPos = pos;
-        }
-
-        function endDraw() { drawing = false; }
-
-        function spawnLaser(pos) {
-            const dot = document.createElement("div"); dot.className = "laser-dot";
-            dot.style.left = pos.x + "px"; dot.style.top = pos.y + "px";
-            canvasWrap.appendChild(dot); setTimeout(() => dot.remove(), 400);
-        }
-
-        canvasWrap.onmousedown = startDraw; canvasWrap.onmousemove = moveDraw; window.onmouseup = endDraw;
-        canvasWrap.ontouchstart = (e) => startDraw(e.touches[0]); canvasWrap.ontouchmove = (e) => moveDraw(e.touches[0]); window.ontouchend = endDraw;
-
-        function openTextInput(pos) {
-            textOverlay.style.left = pos.x + "px"; textOverlay.style.top = pos.y + "px";
-            textOverlay.style.color = currentColor; textOverlay.style.display = "block";
-            textOverlay.value = ""; textOverlay.focus();
-        }
-
-        textOverlay.onblur = () => {
-            if (textOverlay.value.trim()) {
-                pushUndoSnapshot();
-                ctx.font = `${Number(sizeSlider.value)*3}px 'Amiri', serif`; ctx.fillStyle = currentColor;
-                ctx.fillText(textOverlay.value, parseInt(textOverlay.style.left), parseInt(textOverlay.style.top)+20);
-            }
-            textOverlay.style.display = "none";
-        };
-
-        document.getElementById("clear-board-btn").onclick = () => {
-            pushUndoSnapshot(); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        };
-
-        document.getElementById("save-image-btn").onclick = () => {
-            const temp = document.createElement("canvas"); temp.width = canvas.width; temp.height = canvas.height;
-            const tctx = temp.getContext("2d"); tctx.fillStyle = "#f4ecd8"; tctx.fillRect(0,0,temp.width,temp.height);
-            tctx.drawImage(pageCanvas, 0, 0); tctx.drawImage(canvas, 0, 0);
-            const a = document.createElement("a"); a.download = "qalam-board.png"; a.href = temp.toDataURL(); a.click();
-        };
-
-        // Populate Alphabet Grid
+        // Arabic alphabet grid
         const alphabet = [
-            ["ا", "Alif"], ["ب", "Ba"], ["ت", "Ta"], ["ث", "Tha"], ["ج", "Jim"], ["ح", "Ha"], ["خ", "Kha"],
-            ["د", "Dal"], ["ذ", "Dhal"], ["ر", "Ra"], ["ز", "Zay"], ["س", "Sin"], ["ش", "Shin"], ["ص", "Sad"],
-            ["ض", "Dad"], ["ط", "Ta"], ["ظ", "Za"], ["ع", "Ayn"], ["غ", "Ghayn"], ["ف", "Fa"], ["ق", "Qaf"],
-            ["ك", "Kaf"], ["ل", "Lam"], ["م", "Mim"], ["ن", "Nun"], ["ه", "Ha"], ["و", "Waw"], ["ي", "Ya"]
+            ["ا", "Alif", "a"], ["ب", "Ba", "b"], ["ت", "Ta", "t"], ["ث", "Tha", "th"],
+            ["ج", "Jim", "j"], ["ح", "Ha", "ḥ"], ["خ", "Kha", "kh"], ["د", "Dal", "d"],
+            ["ذ", "Dhal", "dh"], ["ر", "Ra", "r"], ["ز", "Zay", "z"], ["س", "Sin", "s"],
+            ["ش", "Shin", "sh"], ["ص", "Sad", "ṣ"], ["ض", "Dad", "ḍ"], ["ط", "Ta", "ṭ"],
+            ["ظ", "Za", "ẓ"], ["ع", "Ayn", "ʿ"], ["غ", "Ghayn", "gh"], ["ف", "Fa", "f"],
+            ["ق", "Qaf", "q"], ["ك", "Kaf", "k"], ["ل", "Lam", "l"], ["م", "Mim", "m"],
+            ["ن", "Nun", "n"], ["ه", "Ha", "h"], ["و", "Waw", "w"], ["ي", "Ya", "y"]
         ];
         const grid = document.getElementById("alphabet-grid");
-        alphabet.forEach(([letter, name]) => {
-            const el = document.createElement("div"); el.className = "letter-card";
-            el.innerHTML = `<div class="letter-ar">${letter}</div><div class="letter-name">${name}</div>`;
+        alphabet.forEach(([letter, name, translit]) => {
+            const el = document.createElement("div");
+            el.className = "letter-card";
+            el.innerHTML = `
+                <div class="letter-ar">${letter}</div>
+                <div class="letter-name">${name}</div>
+                <div class="letter-translit">${translit}</div>
+            `;
             grid.appendChild(el);
         });
     </script>
