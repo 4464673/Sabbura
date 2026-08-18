@@ -114,16 +114,17 @@
         padding-right: 0;
     }
     .dock-label {
-        font-size: 9px;
+        font-size: 11px;
+        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 2px;
-        color: #8fa89b;
+        color: var(--gold-bright);
         position: absolute;
-        top: -20px;
+        top: -22px;
         left: 50%;
         transform: translateX(-50%);
         white-space: nowrap;
-        opacity: 0.8;
+        opacity: 1;
     }
 
     /* ---------- BUTTONS ---------- */
@@ -304,7 +305,6 @@
     <textarea id="text-input-overlay" placeholder="اكتب هنا... (Ctrl+Enter للحفظ)"></textarea>
 </div>
 
-<!-- Header & Layout Styles -->
 <div class="floating-panel top-left-panel">
     <div class="brand">
         <span class="title">سبورة</span>
@@ -316,14 +316,8 @@
         <button class="tool-btn small-btn page-style-btn" data-style="grid">Grid</button>
         <button class="tool-btn small-btn page-style-btn" data-style="dotted">Dots</button>
     </div>
-    <div style="display: flex; gap: 8px; margin-top: 4px;">
-        <button class="tool-btn small-btn text-style-btn active" data-style="naskh" style="font-family:'Amiri',serif;">نسخ</button>
-        <button class="tool-btn small-btn text-style-btn" data-style="heading" style="font-family:'Amiri',serif; font-weight:700;">عنوان</button>
-        <button class="tool-btn small-btn text-style-btn" data-style="simple">بسيط</button>
-    </div>
 </div>
 
-<!-- Actions (Top Right) -->
 <div class="floating-panel top-right-panel">
     <button class="tool-btn action-btn" id="tool-text-btn" title="Text (T)">✎ Text</button>
     <button class="tool-btn action-btn" id="tool-eraser-btn" title="Eraser (E)">🧽 Eraser</button>
@@ -335,7 +329,6 @@
     <button class="tool-btn action-btn danger" id="clear-board-btn" title="Clear">✕ Clear</button>
 </div>
 
-<!-- Main Tool Dock (Bottom Center) -->
 <div class="floating-panel bottom-dock">
     
     <div class="dock-section" style="position: relative;">
@@ -402,7 +395,6 @@
     const sizeLabel = document.getElementById("size-label");
 
     let currentPenTool = "fine";
-    let currentTextStyle = "naskh";
     let currentColor = "#2b2620";
     let currentPageStyle = "plain";
     let usingTextTool = false;
@@ -416,12 +408,6 @@
         brush:       { sizeMultiplier: 1.4, opacity: 0.92, composite: "source-over" },
         marker:      { sizeMultiplier: 1.8, opacity: 1,    composite: "source-over" },
         highlighter: { sizeMultiplier: 3.2, opacity: 0.35, composite: "multiply"    }
-    };
-
-    const TEXT_PRESETS = {
-        naskh:   { family: "'Amiri', serif",    weight: "400", sizeMult: 6.2 },
-        heading: { family: "'Amiri', serif",    weight: "700", sizeMult: 8.5 },
-        simple:  { family: "'Jost', sans-serif", weight: "500", sizeMult: 5.4 }
     };
 
     // ---------- Toast ----------
@@ -579,9 +565,8 @@
     }
 
     function syncActiveUI(targetBtn) {
-        // Keep page/text styles active visually regardless of mode
-        document.querySelector(`.page-style-btn[data-style="${currentPageStyle}"]`).classList.add('active');
-        document.querySelector(`.text-style-btn[data-style="${currentTextStyle}"]`).classList.add('active');
+        const pageBtn = document.querySelector(`.page-style-btn[data-style="${currentPageStyle}"]`);
+        if (pageBtn) pageBtn.classList.add('active');
         targetBtn.classList.add("active");
     }
 
@@ -590,15 +575,6 @@
             clearAllModes();
             currentPenTool = btn.dataset.tool;
             syncActiveUI(btn);
-        });
-    });
-
-    document.querySelectorAll(".text-style-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".text-style-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentTextStyle = btn.dataset.style;
-            if(usingTextTool) textOverlay.focus();
         });
     });
 
@@ -623,9 +599,12 @@
     document.getElementById("tool-eraser-btn").addEventListener("click", (e) => {
         clearAllModes(); usingEraser = true; syncActiveUI(e.target);
     });
+    
     document.getElementById("tool-text-btn").addEventListener("click", (e) => {
         clearAllModes(); usingTextTool = true; syncActiveUI(e.target);
+        showToast("Click on the board to start typing");
     });
+    
     document.getElementById("laser-btn").addEventListener("click", (e) => {
         clearAllModes(); usingLaser = true; syncActiveUI(e.currentTarget);
     });
@@ -689,7 +668,6 @@
     }
 
     function startDraw(e) {
-        // Prevent drawing if clicking on floating panels
         if(e.target.closest('.floating-panel')) return;
         
         const pos = getPos(e);
@@ -740,7 +718,7 @@
         if (!drawing) return;
         if (usingShape && drawing) saveBoard(true);
         else if (drawing && didDrawThisStroke) saveBoard(true);
-        else if (drawing && !didDrawThisStroke && undoStack.length > 0) undoStack.pop(); // click without move
+        else if (drawing && !didDrawThisStroke && undoStack.length > 0) undoStack.pop(); 
         
         drawing = false; shapeSnapshot = null; shapeStartPos = null; lastPos = null;
     }
@@ -754,15 +732,26 @@
 
     // ---------- Arabic Multi-line Text Tool ----------
     let pendingTextPos = null;
+    
+    // Stop clicks on the text input from bubbling to the canvas wrap (which resets the text box)
+    textOverlay.addEventListener("mousedown", (e) => e.stopPropagation());
+    textOverlay.addEventListener("touchstart", (e) => e.stopPropagation());
 
     function openTextInput(pos) {
         pendingTextPos = pos;
-        const preset = TEXT_PRESETS[currentTextStyle];
-        textOverlay.style.left = pos.x + "px"; textOverlay.style.top = (pos.y - 18) + "px";
-        textOverlay.style.fontFamily = preset.family; textOverlay.style.fontWeight = preset.weight;
-        textOverlay.style.fontSize = (Number(sizeSlider.value) * (preset.sizeMult / 3)) + "px";
+        textOverlay.style.left = pos.x + "px"; 
+        textOverlay.style.top = (pos.y - 18) + "px";
+        textOverlay.style.fontFamily = "'Amiri', serif"; 
+        textOverlay.style.fontWeight = "400";
+        textOverlay.style.fontSize = (Number(sizeSlider.value) * 2.5) + "px";
         textOverlay.style.color = currentColor;
-        textOverlay.style.display = "block"; textOverlay.value = ""; textOverlay.focus();
+        textOverlay.style.display = "block"; 
+        textOverlay.value = ""; 
+        
+        // Timeout ensures the display updates before attempting to focus
+        setTimeout(() => {
+            textOverlay.focus();
+        }, 10);
     }
 
     function commitText() {
@@ -770,11 +759,10 @@
         const text = textOverlay.value; textOverlay.style.display = "none";
         if (text.trim()) {
             pushUndoSnapshot();
-            const preset = TEXT_PRESETS[currentTextStyle];
-            const fontSize = Number(sizeSlider.value) * preset.sizeMult;
+            const fontSize = Number(sizeSlider.value) * 2.5;
             
             ctx.save(); ctx.fillStyle = currentColor;
-            ctx.font = `${preset.weight} ${fontSize}px ${preset.family}`;
+            ctx.font = `400 ${fontSize}px 'Amiri', serif`;
             ctx.direction = "rtl"; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
 
             text.split('\n').forEach((line, index) => {
@@ -800,7 +788,6 @@
     document.getElementById("save-image-btn").addEventListener("click", () => {
         const temp = document.createElement("canvas"); temp.width = canvas.width; temp.height = canvas.height;
         const tctx = temp.getContext("2d");
-        // Draw standard solid background manually for download since CSS gradient isn't captured
         tctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--parchment');
         tctx.fillRect(0, 0, temp.width, temp.height);
         tctx.drawImage(pageCanvas, 0, 0, temp.width, temp.height); tctx.drawImage(canvas, 0, 0, temp.width, temp.height);
