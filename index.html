@@ -340,6 +340,31 @@
             color: var(--text-gold);
         }
 
+        .my-class-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #2c4636;
+            background-color: #0e1c16;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .my-class-item:hover { border-color: var(--accent-gold); }
+        .my-class-item .my-class-name { font-weight: bold; color: var(--text-light); }
+        .my-class-item .my-class-role {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-gold);
+            border: 1px solid var(--accent-gold);
+            border-radius: 3px;
+            padding: 2px 8px;
+        }
+
         .portal-input {
             display: block;
             width: 100%;
@@ -546,6 +571,10 @@
                     <button id="role-teacher-btn" class="role-btn">I'm a Teacher</button>
                     <button id="role-student-btn" class="role-btn">I'm a Student</button>
                 </div>
+                <div id="my-classes-section" style="display:none; margin-top:24px; padding-top:20px; border-top:1px dashed rgba(230,185,91,0.3); text-align:left;">
+                    <div style="font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--text-gold); margin-bottom:10px; text-align:center;">Or pick a class you've used before</div>
+                    <div id="my-classes-list"></div>
+                </div>
             </div>
 
             <!-- Teacher: create a class -->
@@ -613,7 +642,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, orderBy, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config integrated directly from your project
         const firebaseConfig = {
@@ -829,6 +858,7 @@
             function showRoleSelect() {
                 hideAllPortalBoxes();
                 roleSelectBox.style.display = "block";
+                loadMyClasses();
             }
 
             document.getElementById("role-teacher-btn").addEventListener("click", () => {
@@ -847,6 +877,59 @@
             }
 
             // --- Teacher: create a class ---
+            // ---------- "My Classes": a real per-account record of every class this
+            // Google account has created or joined, so it follows them to any device ----------
+            async function recordMembership(classId, className, isTeacher) {
+                try {
+                    const uid = auth.currentUser.uid;
+                    await setDoc(doc(db, "memberships", `${uid}_${classId}`), {
+                        uid: uid,
+                        classId: classId,
+                        className: className,
+                        isTeacher: isTeacher,
+                        joinedAt: Date.now()
+                    });
+                } catch (error) {
+                    console.error("Recording membership failed:", error);
+                }
+            }
+
+            async function loadMyClasses() {
+                const section = document.getElementById("my-classes-section");
+                const list = document.getElementById("my-classes-list");
+                list.innerHTML = "";
+                section.style.display = "none";
+
+                if (!auth.currentUser) return;
+
+                try {
+                    const q = query(collection(db, "memberships"), where("uid", "==", auth.currentUser.uid));
+                    const snap = await getDocs(q);
+                    if (snap.empty) return;
+
+                    const items = [];
+                    snap.forEach(docSnap => items.push(docSnap.data()));
+                    items.sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0));
+
+                    items.forEach(item => {
+                        const row = document.createElement("div");
+                        row.className = "my-class-item";
+                        row.innerHTML = `
+                            <span class="my-class-name">${escapeHtml(item.className)}</span>
+                            <span class="my-class-role">${item.isTeacher ? "Teacher" : "Student"}</span>
+                        `;
+                        row.addEventListener("click", () => {
+                            enterClass(item.classId, item.className, item.isTeacher);
+                        });
+                        list.appendChild(row);
+                    });
+
+                    section.style.display = "block";
+                } catch (error) {
+                    console.error("Loading your classes failed:", error);
+                }
+            }
+
             document.getElementById("create-class-btn").addEventListener("click", async () => {
                 const nameInput = document.getElementById("create-class-name");
                 const passInput = document.getElementById("create-class-password");
@@ -880,6 +963,7 @@
                         createdAt: Date.now()
                     });
 
+                    await recordMembership(classId, className, true);
                     enterClass(classId, className, true);
                 } catch (error) {
                     console.error("Create class failed:", error);
@@ -915,18 +999,14 @@
                         return;
                     }
 
-                    const classData = snap.data();
-
-                    if (classData.password !== password) {
+                    if (snap.data().password !== password) {
                         errorBox.textContent = "Wrong password. Double check with your teacher.";
                         errorBox.style.display = "block";
                         return;
                     }
 
-                    // FIX: Compare the user's UID against the teacherUid saved in Firestore
-                    const isActuallyTeacher = (classData.teacherUid === auth.currentUser.uid);
-
-                    enterClass(classId, classData.className, isActuallyTeacher);
+                    await recordMembership(classId, snap.data().className, false);
+                    enterClass(classId, snap.data().className, false);
                 } catch (error) {
                     console.error("Join class failed:", error);
                     errorBox.textContent = "Couldn't join the class. Make sure Firestore is enabled in your Firebase project.";
